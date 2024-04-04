@@ -5,6 +5,7 @@ import axios from 'axios'; // Import axios using ES6 import syntax
 import React from 'react';
 import { useAuth } from '../auth/authProvider';
 import { Navigate } from 'react-router-dom';
+import { API_URL } from '../auth/constants';
 
 export default function SignIn() {
     const [values, setValues] = useState({
@@ -23,7 +24,13 @@ export default function SignIn() {
     
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post('http://localhost:3001/api/signIn', values)
+
+        const trimmedValues = {
+            email: values.email.trim(),
+            password: values.password.trim()
+        };
+
+        axios.post(`${API_URL}/api/signIn`, trimmedValues)
         .then(res => {
             if (res.data.message === 'User logged in') {
                 navigate('/Dashboard');

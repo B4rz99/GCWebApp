@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-
+import { API_URL } from '../auth/constants';
 
 export default function Home() {
     const [auth, setAuth] = useState(false);
@@ -12,7 +12,7 @@ export default function Home() {
     axios.defaults.withCredentials = true;
 
     useEffect(() => {
-        axios.get('http://localhost:3001/signIn')
+        axios.get(`${API_URL}/signIn`)
         .then(res => {
             if (res.data.message === 'User logged in') {
                 setAuth(true);
@@ -27,7 +27,7 @@ export default function Home() {
     });
 
     const handleLogout = () => {
-        axios.get('http://localhost:3001/api/logout')
+        axios.get(`${API_URL}/signIn/api/logout`)
         .then(res => {
           window.location.reload(true);
         }).catch(err => console.log(err));

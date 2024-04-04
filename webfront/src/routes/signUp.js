@@ -5,7 +5,7 @@ import axios from 'axios'; // Import axios using ES6 import syntax
 import React from 'react';
 import { useAuth } from '../auth/authProvider';
 import { Navigate } from 'react-router-dom';
-
+import { API_URL } from '../auth/constants';
 
 export default function SignUp() {
     const [values, setValues] = useState({
@@ -24,7 +24,16 @@ export default function SignUp() {
     
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post('http://localhost:3001/api/signUp', values)
+
+        const trimmedValues = {
+            name: values.name.trim(),
+            lastName: values.lastName.trim(),
+            email: values.email.trim(),
+            password: values.password.trim()
+        };
+        
+        
+        axios.post(`${API_URL}/api/signUp`, trimmedValues)
         .then(res => {
             if (res.data.message === 'User created') {
                 navigate('/signIn');
