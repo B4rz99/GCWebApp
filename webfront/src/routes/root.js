@@ -1,5 +1,5 @@
 import React from 'react'
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 
 
 export default function Root() {
@@ -9,5 +9,6 @@ export default function Root() {
                 <Outlet/>
             </main>
         </>
+        
     )
 }
