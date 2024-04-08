@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios'; // Import axios using ES6 import syntax
 import React from 'react';
-import { useAuth } from '../auth/authProvider';
+import { useAuth } from '../auth/authProvider.tsx';
 import { Navigate } from 'react-router-dom';
 import { API_URL } from '../auth/constants';
 
@@ -33,9 +33,9 @@ export default function SignUp() {
         };
         
         
-        axios.post(`${API_URL}/api/signUp`, trimmedValues)
+        axios.post(`${API_URL}/api/auth/signUp`, trimmedValues)
         .then(res => {
-            if (res.data.message === 'User created') {
+            if (res.data.message === 'User created successfully') {
                 navigate('/signIn');
             } else {
                 alert('Error creating user');

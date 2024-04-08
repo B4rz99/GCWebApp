@@ -7,7 +7,7 @@ import Profile from './routes/profile';
 import Historics from './routes/historics';
 import Root from './routes/root';
 import Home from './routes/home';
-import { AuthProvider } from './auth/authProvider';
+import { AuthProvider } from './auth/authProvider.tsx';
 import ProtectedRoute from './routes/protectedRoute';
 
 const router = createBrowserRouter(createRoutesFromElements(

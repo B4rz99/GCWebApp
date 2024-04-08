@@ -1,4 +1,4 @@
-/* eslint-disable jsx-a11y/alt-text */
+
 import React from 'react';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2

@@ -27,7 +27,7 @@ export default function Home() {
     });
 
     const handleLogout = () => {
-        axios.get(`${API_URL}/signIn/api/logout`)
+        axios.get(`${API_URL}/api/auth/logout`)
         .then(res => {
           window.location.reload(true);
         }).catch(err => console.log(err));
