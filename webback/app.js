@@ -29,7 +29,7 @@ app.use('/api', apiRoutes);
 app.use('/auth', authRoutes);
 
 app.use('/', webRoutes);
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 80;
 
 sequelize.sync()
   .then(() => {
