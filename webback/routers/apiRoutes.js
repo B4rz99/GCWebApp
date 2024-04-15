@@ -103,4 +103,18 @@ router.get('/position', async (req, res) => {
     }
 });
 
+router.get('/allDevices', async (req, res) => {
+    try {
+        // Realizar la consulta para obtener todos los dispositivos
+        const allDevices = await Device.findAll();
+
+        // Retornar los datos de los dispositivos en la respuesta
+        res.json(allDevices);
+    } catch (error) {
+        // En caso de error, manejarlo y enviar una respuesta de error
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 module.exports = router;

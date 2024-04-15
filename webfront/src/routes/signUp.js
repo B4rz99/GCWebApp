@@ -33,7 +33,7 @@ export default function SignUp() {
         };
         
         
-        axios.post(`${API_URL}/api/auth/signUp`, trimmedValues)
+        axios.post(`${API_URL}/auth/signUp`, trimmedValues)
         .then(res => {
             if (res.data.message === 'User created successfully') {
                 navigate('/signIn');

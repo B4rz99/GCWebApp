@@ -24,7 +24,7 @@ export default function SignIn() {
         };
 
         try {
-            const response = await axios.post(`${API_URL}/api/auth/signIn`, trimmedValues);
+            const response = await axios.post(`${API_URL}/auth/signIn`, trimmedValues);
             if (response.data.message === 'User logged in successfully') {
                 // Guardar el token de acceso en el proveedor de autenticación
                 auth.saveUser({ accessToken: response.data.token });

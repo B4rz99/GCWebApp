@@ -7,7 +7,9 @@ import { Icon } from 'leaflet'
 import Selector from './selector.js'
 import Calendar from './calendar.js'
 
-export default function LocationDash() {
+export default function LocationDash({onDateChange, onSelectorChange}) {
+  
+
   return (
     <div>
       <Box
@@ -24,8 +26,8 @@ export default function LocationDash() {
           />
           <Marker position={[10.96854, -74.78132]} icon={new Icon({ iconUrl: markerIconPng, iconSize: [25, 41], iconAnchor: [12, 41] })} />
         </MapContainer>
-        <Calendar />
-        <Selector />
+        <Calendar onDateChange={onDateChange}/>
+        <Selector onSelectorChange={onSelectorChange}/>
       </Box>
     </div>
   );

@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
-
+const jwt = require('jsonwebtoken');
 const buildPath = path.join(__dirname, '/../../webfront/build');
 
 const verifyUser = (req, res, next) => {
@@ -10,7 +10,7 @@ const verifyUser = (req, res, next) => {
     if (!token) {
         return res.status(401).json({ message: 'Unauthorized' });
     } else {
-        jwt.verify(token, 'jwt-secret-key', (err, decoded) => {
+        jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
             if (err) {
                 return res.status(401).json({ message: 'Token unvalid' });
             } else {

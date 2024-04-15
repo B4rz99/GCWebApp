@@ -26,7 +26,7 @@ app.use(cookieParser());
 
 app.use('/api', apiRoutes);
 
-app.use('/api/auth', authRoutes);
+app.use('/auth', authRoutes);
 
 app.use('/', webRoutes);
 const port = process.env.PORT || 3001;
