@@ -26,7 +26,7 @@ const AuthContext = createContext<AuthContextType>({
 
 // Componente del proveedor de autenticación
 export function AuthProvider({ children }: AuthProviderProps) {
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [accessToken, setAccessToken] = useState<string>('');
 
     // Obtener el token de acceso
