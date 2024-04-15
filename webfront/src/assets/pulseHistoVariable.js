@@ -91,7 +91,7 @@ export default function PulseHistoVariable({ startTime, endTime, selectedDevice 
               width={400}
               
               series={[
-                { data, label: 'Frecuencia', yAxisKey: 'leftAxisId' },
+                { data, yAxisKey: 'leftAxisId' },
               ]}
               xAxis={[{ scaleType: 'point', data: xLabels }]}
               yAxis={[{ id: 'leftAxisId' }]}

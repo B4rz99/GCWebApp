@@ -90,7 +90,7 @@ export default function PresHistoVariable({ startTime, endTime, selectedDevice }
               width={400}
               
               series={[
-                { data, label: 'HeartRate', yAxisKey: 'leftAxisId' },
+                { data, yAxisKey: 'leftAxisId' },
               ]}
               xAxis={[{ scaleType: 'point', data: xLabels }]}
               yAxis={[{ id: 'leftAxisId' }]}

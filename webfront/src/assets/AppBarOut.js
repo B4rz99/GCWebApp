@@ -12,7 +12,6 @@ export default function ResponsiveAppBar() {
     <AppBar position="static">
       <Container maxWidth="xxl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
           <Typography
             variant="h6"
             noWrap
@@ -30,7 +29,6 @@ export default function ResponsiveAppBar() {
           >
             GeoCardio
           </Typography>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
           <Typography
             variant="h5"
             noWrap

@@ -29,7 +29,7 @@ export default function MyProfile() {
         >
           <Card>
             <Box sx={{ mb: 1 }}>
-              <Typography level="title-md">Información Personal</Typography>
+              <Typography level="title-md">Información Personal del Paciente</Typography>
             </Box>
             <Divider />
             <Stack
@@ -44,20 +44,24 @@ export default function MyProfile() {
                     sx={{ display: { sm: 'flex-column', md: 'flex-row' }, gap: 2 }}
                   >
                     <Input size="sm" placeholder="Nombre" defaultValue='Orlando' />
-                    <Input size="sm" placeholder="Apellido" defaultValue='Barboza' />
                   </FormControl>
-                </Stack>
-                <Stack direction="row" spacing={2}>
-                  <FormControl sx={{ flexGrow: 1 }}>
-                    <FormLabel>Correo</FormLabel>
-                    <Input
-                      size="sm"
-                      type="email"
-                      startDecorator={<EmailRoundedIcon />}
-                      placeholder="email"
-                      defaultValue="oalcala@uniorte.edu.co"
-                      sx={{ flexGrow: 1 }}
-                    />
+                  <FormLabel>Apellido</FormLabel>
+                  <FormControl
+                    sx={{ display: { sm: 'flex-column', md: 'flex-row' }, gap: 2 }}
+                  >
+                    <Input size="sm" placeholder="Apellido" defaultValue='Barboza'/>
+                  </FormControl>
+                  <FormLabel>Correo</FormLabel>
+                  <FormControl
+                    sx={{ display: { sm: 'flex-column', md: 'flex-row' }, gap: 2 }}
+                  >
+                  <Input size="sm" type="email" placeholder="email" defaultValue="oalcala@uninorte.edu.co"/>
+                  </FormControl>
+                  <FormLabel>ID del Brazalete</FormLabel>
+                  <FormControl
+                    sx={{ display: { sm: 'flex-column', md: 'flex-row' }, gap: 2 }}
+                  >
+                  <Input size="sm" placeholder="ID" defaultValue="123456"/>
                   </FormControl>
                 </Stack>
               </Stack>
@@ -80,29 +84,50 @@ export default function MyProfile() {
                     }}
                   >
                     <Input size="sm" placeholder="Nombre" defaultValue='Orlando' />
+                  </FormControl>
+                  <FormLabel>Apellido</FormLabel>
+                  <FormControl
+                    sx={{
+                      display: {
+                        sm: 'flex-column',
+                        md: 'flex-row',
+                      },
+                      gap: 2,
+                    }}
+                  >
                     <Input size="sm" placeholder="Apellido" defaultValue='Barboza'/>
+                  </FormControl>
+                  <FormLabel>Correo</FormLabel>
+                  <FormControl
+                    sx={{
+                      display: {
+                        sm: 'flex-column',
+                        md: 'flex-row',
+                      },
+                      gap: 2,
+                    }}
+                  >
+                    <Input size="sm" type="email" placeholder="email" defaultValue="oalcala@uninorte.edu.co"/>
+                  </FormControl>
+                  <FormLabel>ID del Brazalete</FormLabel>
+                  <FormControl
+                    sx={{
+                      display: {
+                        sm: 'flex-column',
+                        md: 'flex-row',
+                      },
+                      gap: 2,
+                    }}
+                  >
+                    <Input size="sm" placeholder="ID" defaultValue="123456"/>
                   </FormControl>
                 </Stack>
               </Stack>
-              <FormControl sx={{ flexGrow: 1 }}>
-                <FormLabel>Correo</FormLabel>
-                <Input
-                  size="sm"
-                  type="email"
-                  startDecorator={<EmailRoundedIcon />}
-                  placeholder="email"
-                  defaultValue="oalcala@uninorte.edu.co"
-                  sx={{ flexGrow: 1 }}
-                />
-              </FormControl>
             </Stack>
             <CardOverflow sx={{ borderTop: '1px solid', borderColor: 'divider' }}>
               <CardActions sx={{ alignSelf: 'flex-end', pt: 2 }}>
-                <Button size="sm" variant="outlined" color="neutral">
-                  Cancelar
-                </Button>
                 <Button size="sm" variant="solid">
-                  Guardar
+                  Registrar
                 </Button>
               </CardActions>
             </CardOverflow>
@@ -110,4 +135,5 @@ export default function MyProfile() {
         </Stack>
       </Box>
     );
-  }
+}
+

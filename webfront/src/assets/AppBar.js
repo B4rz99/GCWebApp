@@ -2,7 +2,6 @@ import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -17,7 +16,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 const pages = ['Dashboard', 'Historial'];
-const settings = ['Profile', 'Dashboard', 'Logout'];
+const settings = ['Registro Paciente', 'Dashboard', 'Cerrar Sesión'];
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -39,18 +38,20 @@ function ResponsiveAppBar() {
   };
 
   const handleLogout = () => {
-    axios.get('http://localhost:3001/api/logout')
-    .then(res => {
-      window.location.reload(true);
-    }).catch(err => console.log(err));
+    axios.get('http://localhost:3001/auth/logout')
+      .then(res => {
+        console.log("Logout successful");
+        window.location.href = '/SignIn';
+      })
+      .catch(err => console.log(err));
   }
 
   const handleMenuItemClick = (setting) => () => {
-    if (setting === 'Logout') {
+    if (setting === 'Cerrar Sesión') {
       handleLogout();
     } else if (setting === 'Dashboard') {
       navigate('/Dashboard');
-    } else if (setting === 'Profile') {
+    } else if (setting === 'Registro Paciente') {
       navigate('/Profile');
     }
     handleCloseUserMenu();
@@ -71,18 +72,17 @@ function ResponsiveAppBar() {
     <AppBar position="static">
       <Container maxWidth="xxl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-          <Link to="/Dashboard" style={{ textDecoration: 'none', color: 'inherit' }}>
+          <Link to="/Dashboard" style={{ textDecoration: 'none' }}>
             <Typography
               variant="h6"
               noWrap
-              component="a"
               sx={{
                 mr: 2,
                 display: { xs: 'none', md: 'flex' },
                 fontFamily: 'Mulish',
                 fontWeight: 700,
                 letterSpacing: '.1rem',
+                color: 'white'
               }}
             >
               GeoCardio
@@ -90,7 +90,7 @@ function ResponsiveAppBar() {
           </Link>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-            <IconButton
+            <Button
               size="large"
               aria-label="account of current user"
               aria-controls="menu-appbar"
@@ -99,7 +99,7 @@ function ResponsiveAppBar() {
               color="inherit"
             >
               <MenuIcon />
-            </IconButton>
+            </Button>
             <Menu
               id="menu-appbar"
               anchorEl={anchorElNav}
@@ -125,12 +125,10 @@ function ResponsiveAppBar() {
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-          <Link to="/Dashboard" style={{ textDecoration: 'none', color: 'inherit' }}>
+          <Link to="/Dashboard" style={{ textDecoration: 'none'}}>
             <Typography
               variant="h5"
               noWrap
-              component="a"
               href="#app-bar-with-responsive-menu"
               sx={{
                 mr: 2,
@@ -139,8 +137,8 @@ function ResponsiveAppBar() {
                 fontFamily: 'Mulish',
                 fontWeight: 700,
                 letterSpacing: '.1rem',
-                color: 'inherit',
                 textDecoration: 'none',
+                color: 'white'
               }}
             >
               GeoCardio
@@ -160,9 +158,9 @@ function ResponsiveAppBar() {
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar>OB</Avatar>
-              </IconButton>
+              <Button variant="outlined" onClick={handleOpenUserMenu} sx={{ p: 0, color: 'white'}}>
+                Menu
+              </Button>
             </Tooltip>
             <Menu
               sx={{ mt: '45px' }}

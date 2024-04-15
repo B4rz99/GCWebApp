@@ -91,7 +91,7 @@ export default function satHistoVariable({ startTime, endTime, selectedDevice })
               width={400}
               
               series={[
-                { data, label: 'Saturación Oxigeno', yAxisKey: 'leftAxisId' },
+                { data, yAxisKey: 'leftAxisId' },
               ]}
               xAxis={[{ scaleType: 'point', data: xLabels }]}
               yAxis={[{ id: 'leftAxisId', min:80 }]}

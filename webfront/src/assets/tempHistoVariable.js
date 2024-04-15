@@ -92,7 +92,7 @@ export default function tempHistoVariable({ startTime, endTime, selectedDevice }
               width={400}
               
               series={[
-                { data, label: 'Temperatura', yAxisKey: 'leftAxisId' },
+                { data, yAxisKey: 'leftAxisId' },
               ]}
               xAxis={[{ scaleType: 'point', data: xLabels }]}
               yAxis={[{ id: 'leftAxisId', min:32 }]}

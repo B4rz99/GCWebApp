@@ -35,7 +35,13 @@ export default function historics() {
         <SatHistoVariable startTime={startTime} endTime={endTime} selectedDevice={selectedDevice}/>
     
     </Box>
-    <Location onDateChange={handleDateChange} onSelectorChange={handleSelectorChange}/>
+    <Location
+        onDateChange={handleDateChange}
+        onSelectorChange={handleSelectorChange}
+        startTime={startTime}
+        endTime={endTime}
+        selectedDevice={selectedDevice}
+      />
     </div>
   )
 }
