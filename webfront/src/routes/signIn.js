@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../auth/authProvider.tsx';
@@ -14,6 +14,14 @@ export default function SignIn() {
 
     const navigate = useNavigate();
     const auth = useAuth();
+
+    // Si el usuario ya está autenticado, redirigir al panel de control
+    useEffect(() => {
+        // Verify authentication when component mounts
+        if (auth.isAuthenticated) {
+            navigate('/Dashboard');
+        }
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -38,11 +46,6 @@ export default function SignIn() {
             alert('Error logging in');
         }
     };
-
-    // Si el usuario ya está autenticado, redirigir al panel de control
-    if (auth.isAuthenticated) {
-        return <Navigate to='/Dashboard' />;
-    }
 
     return (
         <div>

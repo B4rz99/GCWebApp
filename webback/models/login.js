@@ -23,6 +23,10 @@ const Login = sequelize.define('Login', {
     password: {
       type: DataTypes.STRING(60),
       allowNull: false
+    },
+    role: {
+      type: DataTypes.STRING,
+      allowNull: true
     }
 });
 

@@ -13,13 +13,6 @@ const webRoutes = require('./routers/webRoutes');
 const app = express();
 const buildPath = path.join(__dirname, '/../webfront/build');
 
-
-
-//app.use(cors({
-//    origin: ['http://localhost:3000'],
-//    methods: ['GET', 'POST'],
-//    credentials: true
-//}));
 app.use(express.static(buildPath));
 app.use(express.json());
 app.use(cookieParser());
@@ -29,7 +22,7 @@ app.use('/api', apiRoutes);
 app.use('/auth', authRoutes);
 
 app.use('/', webRoutes);
-const port = process.env.PORT || 80;
+const port = process.env.PORT || 3001;
 
 sequelize.sync()
   .then(() => {
