@@ -33,7 +33,7 @@ export default function satHistoVariable({ startTime, endTime, selectedDevice })
     const fetchData = async () => {
       if (!selectedDevice) return;
       try {
-        const response = await axios.get('/api/oxygen', {
+        const response = await axios.get(`${API_URL}/api/oxygen`, {
           params: {
             deviceId: selectedDevice,
             startDate: startTime,

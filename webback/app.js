@@ -2,19 +2,13 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
-const path = require('path');
 const authenticate = require('./auth/authenticate');
 
 const sequelize = require('./dbServer');
 const authRoutes = require('./routers/authRoutes');
 const apiRoutes = require('./routers/apiRoutes');
-const webRoutes = require('./routers/webRoutes');
 const refreshToken = require('./routers/refreshToken');
-const signIn = require('./routers/signIn');
-const signUp = require('./routers/signUp');
-const signOut = require('./routers/signOut');
 const user = require('./routers/user');
-const todos = require('./routers/todos');
 
 
 const app = express();
@@ -25,12 +19,10 @@ app.use(cors());
 app.use('/api', apiRoutes);
 
 
-app.use('/api', refreshToken);
-app.use('/api', signIn);
-app.use('/api', signUp);
-app.use('/api', signOut);
+app.use('/token', refreshToken);
+app.use('/auth', authRoutes);
+
 app.use('/api', authenticate, user);
-app.use('/api', authenticate, todos);
 
 const port = process.env.PORT || 3001;
 

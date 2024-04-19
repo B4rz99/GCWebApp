@@ -4,6 +4,6 @@ import { useAuth } from '../auth/authProvider.tsx';
 export default function ProtectedRoute() {
     const auth = useAuth();
 
-    return auth.isAuthenticated ? <Outlet /> : <Navigate to="/SignIn" />;
+    return localStorage.getItem('token') ? <Outlet /> : <Navigate to="/SignIn" />;
 
 }

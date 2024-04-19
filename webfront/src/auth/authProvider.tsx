@@ -23,7 +23,7 @@ export function AuthProvider ({children}: AuthProviderProps) {
 
     async function requestNewAccessToken(refreshToken: string) {
         try {
-            const response = await fetch(`${API_URL}/api/refreshToken`, {
+            const response = await fetch(`${API_URL}/token/refreshToken`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

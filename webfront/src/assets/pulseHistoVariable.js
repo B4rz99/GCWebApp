@@ -33,7 +33,7 @@ export default function PulseHistoVariable({ startTime, endTime, selectedDevice 
     const fetchData = async () => {
       if (!selectedDevice) return;
       try {
-        const response = await axios.get('/api/heartRate', {
+        const response = await axios.get(`${API_URL}/api/heartRate`, {
           params: {
             deviceId: selectedDevice,
             startDate: startTime,

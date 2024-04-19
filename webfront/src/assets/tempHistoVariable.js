@@ -34,7 +34,7 @@ export default function tempHistoVariable({ startTime, endTime, selectedDevice }
     const fetchData = async () => {
       if (!selectedDevice) return;
       try {
-        const response = await axios.get('/api/temperature', {
+        const response = await axios.get(`${API_URL}/api/temperature`, {
           params: {
             deviceId: selectedDevice,
             startDate: startTime,
