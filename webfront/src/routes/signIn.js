@@ -5,7 +5,7 @@ import { useAuth } from '../auth/authProvider.tsx';
 import { Navigate } from 'react-router-dom';
 import { API_URL } from '../auth/constants';
 import AppBarOut from '../assets/AppBarOut';
-
+import Cookies from 'js-cookie';
 export default function SignIn() {
     const [values, setValues] = useState({
         email: '',
@@ -26,10 +26,8 @@ export default function SignIn() {
         try {
             const response = await axios.post(`${API_URL}/auth/signIn`, trimmedValues);
             if (response.data.message === 'User logged in successfully') {
-                // Guardar el token de acceso en el proveedor de autenticación
-                auth.saveUser({ accessToken: response.data.token });
                 // Navegar al panel de control
-                navigate('/Dashboard');
+                window.location.href('/Dashboard');
             } else {
                 alert('Error logging in');
             }
