@@ -7,10 +7,14 @@ import PresVariable from '../assets/presVariable';
 import CardVariable from '../assets/CardVariable';  
 import TempVariable from '../assets/tempVariable';
 import SatVariable from '../assets/satVariable';
+import { useAuth } from '../auth/authProvider.tsx';
 
 
 //Dashboard view rendering
 function dashboard() {
+  const auth = useAuth();
+
+
   return (
     <div className='App'>
       <AppBar />

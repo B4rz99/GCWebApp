@@ -8,12 +8,6 @@ import { Navigate } from 'react-router-dom';
 import { API_URL } from '../auth/constants';
 
 export default function SignUp() {
-    /*const [values, setValues] = useState({
-        name: '',
-        lastName: '',
-        email: '',
-        password: ''
-    });*/
 
     const [name, setName] = useState('');
     const [lastName, setLastName] = useState('');

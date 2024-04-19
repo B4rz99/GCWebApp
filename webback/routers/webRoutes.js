@@ -1,4 +1,4 @@
-
+/*
 const express = require('express');
 const router = express.Router();
 const path = require('path');
@@ -40,3 +40,4 @@ router.get('/Historics', verifyUser, serveIndexHtml);
 router.get('/Home', verifyUser, serveIndexHtml);
 
 module.exports = router;
+*/

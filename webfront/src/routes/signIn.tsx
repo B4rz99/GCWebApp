@@ -62,9 +62,18 @@ export default function SignIn() {
 
             if (response.ok) {
                 console.log('User logged in successfully');
-                navigate('/dashboard');
+                const json = await response.json() as AuthResponse;
+                
+                if(json.body.accessToken && json.body.refreshToken) {
+                    auth.saveEmail(json);
+                    navigate('/Dashboard');
+                }
+                
             } else {
                 console.log('Error logging in');
+                const json = await response.json() as AuthResponseError;
+                setError(json.body.error);
+                return;
             }
         } catch (error) {
             console.log(error);

@@ -6,7 +6,6 @@ import Dashboard from './routes/dashboard';
 import Profile from './routes/profile';
 import Historics from './routes/historics';
 import Root from './routes/root';
-import Home from './routes/home';
 import { AuthProvider } from './auth/authProvider.tsx';
 import ProtectedRoute from './routes/protectedRoute';
 
@@ -19,7 +18,6 @@ const router = createBrowserRouter(createRoutesFromElements(
         <Route path="Profile" element={ <Profile/> }/>
         <Route path="Historics" element={ <Historics/>}/>
       </Route>
-      <Route path="Home" element={ <Home/>}/>
     </Route>
 ));
 
