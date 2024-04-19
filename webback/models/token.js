@@ -9,9 +9,12 @@ const Token = sequelize.define('Token', {
         autoIncrement: true
     },
     token: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: false
     },
+}, {
+    freezeTableName: true,
+    timestamps: false,
 });
 
 module.exports = Token;

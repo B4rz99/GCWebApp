@@ -1,9 +1,8 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../dbServer');
 const bcrypt = require('bcrypt');
-const { generateAccessToken } = require('../auth/generateTokens');
-const { getEmailInfo } = require('../lib/getEmailInfo');
-const { generateRefreshToken } = require('../auth/generateTokens');
+const { generateAccessToken, generateRefreshToken } = require('../auth/generateTokens');
+
 const Token = require('./token');
 
 const Login = sequelize.define('Login', {
@@ -33,6 +32,9 @@ const Login = sequelize.define('Login', {
       type: DataTypes.STRING,
       allowNull: true
     }
+}, {
+  freezeTableName: true,
+  timestamps: false,
 });
 
 Login.beforeSave(async (user, options) => {
@@ -55,11 +57,11 @@ Login.prototype.isValidPassword = async function(password) {
 };
 
 Login.prototype.createAccessToken = function() {
-  return generateAccessToken(this);
+  return generateAccessToken(this.email);
 };
 
 Login.prototype.createRefreshToken = async function() {
-  const refreshToken = generateRefreshToken(this);
+  const refreshToken = generateRefreshToken(this.email);
   try {
       await new Token({ token: refreshToken }).save();
       return refreshToken;
