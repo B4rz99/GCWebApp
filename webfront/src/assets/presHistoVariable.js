@@ -88,13 +88,14 @@ export default function PresHistoVariable({ startTime, endTime, selectedDevice }
             <LineChart
               height={250}
               width={400}
-              
               series={[
-                { data, yAxisKey: 'leftAxisId' },
+                  { data, yAxisKey: 'leftAxisId' },
               ]}
               xAxis={[{ scaleType: 'point', data: xLabels }]}
               yAxis={[{ id: 'leftAxisId' }]}
-            />
+            >
+              <ZoomPanHandler />
+          </LineChart>
           </Paper>
         </Box>
       </ThemeProvider>

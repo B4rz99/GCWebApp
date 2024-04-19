@@ -15,14 +15,6 @@ export default function SignIn() {
     const navigate = useNavigate();
     const auth = useAuth();
 
-    // Si el usuario ya está autenticado, redirigir al panel de control
-    useEffect(() => {
-        // Verify authentication when component mounts
-        if (auth.isAuthenticated) {
-            navigate('/Dashboard');
-        }
-    }, []);
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 

@@ -31,6 +31,7 @@ export default function Calendar({onDateChange}) {
               endDate={endDate}
               minDate={new Date(thisYear, 0, 1)} // Primer día del año actual
               maxDate={today} // Fecha de hoy
+              dateFormat="dd/MM/yyyy"
           />
           <DatePicker
               selected={endDate}
@@ -40,6 +41,7 @@ export default function Calendar({onDateChange}) {
               endDate={endDate}
               minDate={startDate} // La fecha mínima debe ser la fecha de inicio
               maxDate={today} // Fecha de hoy
+              dateFormat="dd/MM/yyyy"
           />
       </>
   );

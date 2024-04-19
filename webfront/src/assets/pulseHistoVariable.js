@@ -4,8 +4,7 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material';
 import axios from 'axios';
-import { LineChart } from '@mui/x-charts/LineChart';
-
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Brush } from 'recharts';
 
 const theme = createTheme({
   components: {
@@ -26,8 +25,9 @@ const theme = createTheme({
   },
 });
 
+
 export default function PulseHistoVariable({ startTime, endTime, selectedDevice }) {
-  const [chartData, setChartData] = useState([]);
+  const [chartData, setChartData] = useState([])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -75,8 +75,9 @@ export default function PulseHistoVariable({ startTime, endTime, selectedDevice 
 
   const avgHeartRateSeries = transformData();
 
-  const data = avgHeartRateSeries.map(entry => entry.y);
-  const xLabels = avgHeartRateSeries.map(entry => entry.x);
+  const handleDataClick = (data, index) => {
+    setClickedDataIndex(index);
+  };
 
   return (
     <div>
@@ -84,21 +85,26 @@ export default function PulseHistoVariable({ startTime, endTime, selectedDevice 
         <Box height={250} width={400}>
           <Paper elevation={4}>
             <Typography component='h1' sx={{ mx: 4 }}>
-              Pulso
+              Frec. Cardiaca
             </Typography>
             <LineChart
-              height={250}
               width={400}
+              height={250}
+              data={avgHeartRateSeries}
+              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
               
-              series={[
-                { data, yAxisKey: 'leftAxisId' },
-              ]}
-              xAxis={[{ scaleType: 'point', data: xLabels }]}
-              yAxis={[{ id: 'leftAxisId' }]}
-            />
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="x" />
+              <YAxis />
+              <Tooltip formatter={(value) => Math.round(value)} />
+              <Line type="monotone" dataKey="y" stroke="#8884d8"/>
+              <Brush dataKey="x" height={30} />
+            </LineChart>
           </Paper>
         </Box>
       </ThemeProvider>
     </div>
   );
 }
+
