@@ -1,9 +1,9 @@
-function getEmailInfo() {
+/*function getEmailInfo() {
     const emailInfo = {
-        email: 'email',
-        password: 'password',
-        id: Login.id,
+        email: login.email,
+        password: login.password,
+        id: login.id,
     };
 }
 
-module.exports = { getEmailInfo };
+module.exports = getEmailInfo ;*/

@@ -55,11 +55,11 @@ Login.prototype.isValidPassword = async function(password) {
 };
 
 Login.prototype.createAccessToken = function() {
-  return generateAccessToken(getEmailInfo(this));
+  return generateAccessToken(this);
 };
 
 Login.prototype.createRefreshToken = async function() {
-  const refreshToken = generateRefreshToken(getEmailInfo(this));
+  const refreshToken = generateRefreshToken(this);
   try {
       await new Token({ token: refreshToken }).save();
       return refreshToken;

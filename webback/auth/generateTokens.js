@@ -12,4 +12,4 @@ function generateRefreshToken(email) {
     return sign({ email }, false);
 }
 
-module.exports = { generateAccessToken, generateRefreshToken };
+module.exports =  {generateAccessToken, generateRefreshToken};
