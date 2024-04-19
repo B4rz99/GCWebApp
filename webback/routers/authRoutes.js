@@ -1,4 +1,4 @@
-const express = require('express');
+/*const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -81,4 +81,16 @@ router.get('/logout', (req, res) => {
     return res.json({ message: 'User logged out successfully' });
 });
 
-module.exports = router;
+router.get('/refreshToken', (req, res) => {
+    
+})
+
+router.get('/todos', (req, res) => {
+    
+});
+
+router.get('/user', (req, res) => {
+
+});
+
+module.exports = router; */

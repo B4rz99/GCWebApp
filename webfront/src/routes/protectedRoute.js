@@ -1,20 +1,9 @@
-import { Outlet, Navigate } from "react-router-dom";
-import { useState } from "react";
-import { useAuth } from "../auth/authProvider.tsx";
-import axios from 'axios';
-import { API_URL } from '../auth/constants';
+import { Outlet, Navigate } from 'react-router-dom';
+import { useAuth } from '../auth/authProvider.tsx';
 
 export default function ProtectedRoute() {
-    const [auth, setAuth] = useState(false);
+    const auth = useAuth();
 
-    axios.get(`${API_URL}/home`)
-    .then(res => {
-        if (res.data.message === 'User logged in'){
-            setAuth(true)
-        } else{
-            setAuth(false)
-        }
-    }).catch(err => console.log(err));
+    return auth.isAuthenticated ? <Outlet /> : <Navigate to="/SignIn" />;
 
-    return auth ? <Outlet /> : <Navigate to="/SignIn" />;
 }

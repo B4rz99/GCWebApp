@@ -1,7 +1,7 @@
 import './App.css';
 import { RouterProvider, Route, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
-import SignIn from './routes/signIn';
-import SignUp from './routes/signUp';
+import SignIn from './routes/signIn.tsx';
+import SignUp from './routes/signUp.tsx';
 import Dashboard from './routes/dashboard';
 import Profile from './routes/profile';
 import Historics from './routes/historics';
