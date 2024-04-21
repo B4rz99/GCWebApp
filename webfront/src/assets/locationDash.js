@@ -5,9 +5,9 @@ import Box from '@mui/material/Box';
 import markerIconPng from "leaflet/dist/images/marker-icon.png"
 import { Icon } from 'leaflet'
 import Selector from './selector.js'
-import Calendar from './calendar.js'
+import axios from 'axios';
 
-export default function LocationDash() {
+export default function LocationDash({onSelectorChange, selectedDevice}) {
   return (
     <div>
       <Box
@@ -24,7 +24,7 @@ export default function LocationDash() {
           />
           <Marker position={[10.96854, -74.78132]} icon={new Icon({ iconUrl: markerIconPng, iconSize: [25, 41], iconAnchor: [12, 41] })} />
         </MapContainer>
-        <Selector />
+        <Selector onSelectorChange={onSelectorChange}/>
       </Box>
     </div>
   );

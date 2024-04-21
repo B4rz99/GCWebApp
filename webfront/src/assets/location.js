@@ -9,6 +9,7 @@ import Calendar from './calendar.js'
 import { Polyline } from 'react-leaflet';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { API_URL } from '../auth/constants';
 
 export default function LocationDash({onDateChange, onSelectorChange, startTime, endTime, selectedDevice}) {
   console.log('Props received:', { onDateChange, onSelectorChange, startTime, endTime, selectedDevice });  
@@ -18,7 +19,7 @@ export default function LocationDash({onDateChange, onSelectorChange, startTime,
         const fetchData = async () => {
           if (!selectedDevice) return;
             try {
-                const response = await axios.get('/api/position', {
+                const response = await axios.get(`${API_URL}/api/position`, {
                     params: {
                         deviceId: selectedDevice,
                         startDate: startTime,

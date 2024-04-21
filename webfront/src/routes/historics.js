@@ -13,7 +13,7 @@ export default function historics() {
   const [endTime, setEndTime] = React.useState(null);
   const [selectedDevice, setSelectedDevice] = React.useState('');
   const handleDateChange = (startDate, endDate) => {
-    // Aquí puedes realizar acciones con las fechas seleccionadas, como obtener datos de un servidor
+    
     setStartTime(startDate);
     setEndTime(endDate);
   };

@@ -1,12 +1,12 @@
-
 import React from 'react';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { createTheme, ThemeProvider } from '@mui/material'
+import { createTheme, ThemeProvider } from '@mui/material';
+import { useDataContext } from '../DataContext'; // Importa el contexto de datos
 
-//Theme-ing the Pulse variable
+// Theme-ing the Pulse variable
 const theme = createTheme({
   components: {
     MuiTypography: {
@@ -35,8 +35,14 @@ const theme = createTheme({
   },
 });
 
-//Construction of Pulse component
-const CardVariable = () => {
+// Construction of Pulse component
+const CardVariable = ({ selectedDevice }) => {
+  const { data } = useDataContext(); // Get data from the data context
+
+  // Filter data by selectedDevice and extract heart rate
+  const heartRateData = data.find(deviceData => deviceData.DeviceId === selectedDevice)?.data[0];
+  const heartRate = heartRateData ? `${heartRateData.HeartRate} lpm` : '0 lpm'; // Default to 0 lpm if no heart rate data
+
   return (
     <Grid item xs={3} >
       <ThemeProvider theme={theme}>
@@ -54,10 +60,10 @@ const CardVariable = () => {
             }}
           >
             <Typography component='h2' sx={{display:{xs:'flex', md:'none', lg:'flex'}}}>
-              80 lpm
+              {heartRate}
             </Typography>
             <Typography component='h2' sx={{ fontSize:'54px', fontWeight:'500', display:{xs:'none', md:'flex', lg:'none'}}}>
-              80 lpm
+              {heartRate}
             </Typography>
           </Box>
           <Grid container

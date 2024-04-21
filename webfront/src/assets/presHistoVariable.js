@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material';
 import axios from 'axios';
 import { LineChart } from '@mui/x-charts/LineChart';
+import { API_URL } from '../auth/constants';
 
 const theme = createTheme({
   components: {

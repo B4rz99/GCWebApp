@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const { Op } = require('sequelize');
-
+const sequelize = require('sequelize')
 const Device = require('../models/device');
 const HeartRate = require('../models/heartRate');
 
@@ -116,5 +116,69 @@ router.get('/allDevices', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+
+router.get('/realTime', async (req, res) => {
+    try {
+      let deviceIds = req.query.DeviceIDs; // Obtener los DeviceIDs de la consulta (si los hay)
+      if (!Array.isArray(deviceIds)) {
+        deviceIds = [deviceIds]; // Si solo se proporciona un DeviceID, convertirlo en un array
+      }
+  
+      let whereClause = {}; // Clausula where para Sequelize
+  
+      // Si se proporcionan DeviceIDs, filtrar por esos dispositivos
+      if (deviceIds && deviceIds.length > 0) {
+        whereClause = { DeviceId: deviceIds };
+      }
+  
+      // Obtener el último valor de HeartRate para cada DeviceId
+        const heartRates = await HeartRate.findAll({
+            attributes: ['DeviceId', [sequelize.fn('MAX', sequelize.col('TimeStamp')), 'TimeStamp'], [sequelize.fn('MAX', sequelize.col('HeartRate')), 'HeartRate']],
+            
+            group: 'DeviceId',
+            order: [['TimeStamp', 'DESC']],
+            limit: 1
+        });
+        
+        // Obtener el último valor de Oxygen para cada DeviceId
+        const oxygens = await Oxygen.findAll({
+            attributes: ['DeviceId', [sequelize.fn('MAX', sequelize.col('TimeStamp')), 'TimeStamp'], [sequelize.fn('MAX', sequelize.col('Oxygen')), 'Oxygen']],
+            
+            group: 'DeviceId',
+            order: [['TimeStamp', 'DESC']],
+            limit: 1
+        });
+        
+        // Obtener el último valor de Temperature para cada DeviceId
+        const temperatures = await Temperature.findAll({
+            attributes: ['DeviceId', [sequelize.fn('MAX', sequelize.col('TimeStamp')), 'TimeStamp'], [sequelize.fn('MAX', sequelize.col('Temperature')), 'Temperature']],
+            
+            group: 'DeviceId',
+            order: [['TimeStamp', 'DESC']],
+            limit: 1
+        });
+  
+      // Combinar los resultados en un solo JSON
+      const data = heartRates.map((heartRate, index) => ({
+        DeviceId: heartRate.DeviceId,
+        data: [
+          {
+            TimeStamp: heartRate.TimeStamp,
+            HeartRate: heartRate.HeartRate,
+            Oxygen: oxygens[index].Oxygen,
+            Temperature: temperatures[index].Temperature
+          }
+        ]
+      }));
+  
+      res.json(data);
+    } catch (error) {
+      console.error('Error fetching real-time data:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+  
 
 module.exports = router;

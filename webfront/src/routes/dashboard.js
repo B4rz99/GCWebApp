@@ -13,8 +13,11 @@ import { useAuth } from '../auth/authProvider.tsx';
 //Dashboard view rendering
 function dashboard() {
   const auth = useAuth();
+  const [selectedDevice, setSelectedDevice] = React.useState('');
 
-
+  const handleSelectorChange = (selector) => {
+    setSelectedDevice(selector); // Establecer el valor seleccionado del selector
+  };
   return (
     <div className='App'>
       <AppBar />
@@ -25,12 +28,13 @@ function dashboard() {
         marginY={3}
         marginX={6}
       >
-        <PresVariable/>
-        <CardVariable/>
-        <TempVariable/>
-        <SatVariable/>
+        
+        <CardVariable selectedDevice={selectedDevice}/>
+        <TempVariable selectedDevice={selectedDevice}/>
+        <SatVariable selectedDevice={selectedDevice}/>
       </Box>
-      <LocationDash />
+      <LocationDash onSelectorChange={handleSelectorChange} selectedDevice={selectedDevice} />
+
     </div>
   );
 }

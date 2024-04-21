@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material';
 import axios from 'axios';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Brush, Legend } from 'recharts';
-
+import { API_URL } from '../auth/constants';
 
 const theme = createTheme({
     components: {

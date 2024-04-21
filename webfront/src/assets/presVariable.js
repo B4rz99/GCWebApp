@@ -36,7 +36,7 @@ const theme = createTheme({
 });
 
 //Construction of Pressure component
-const presVariable = () => {
+const presVariable = ({ selectedDevice}) => {
   return (
     <Grid item xs={3} >
       <ThemeProvider theme={theme}>
