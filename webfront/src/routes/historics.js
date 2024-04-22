@@ -1,7 +1,7 @@
 import React from 'react'
 import Box from '@mui/material/Box';
 import 'leaflet/dist/leaflet.css';
-import AppBar from '../assets/AppBar';
+import AppBar from '../assets/AppBar.tsx';
 import Location from '../assets/location';
 import PulseHistoVariable from '../assets/pulseHistoVariable';
 import TempHistoVariable from '../assets/tempHistoVariable';

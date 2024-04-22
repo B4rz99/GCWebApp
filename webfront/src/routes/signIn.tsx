@@ -9,10 +9,6 @@ import { AuthResponseError } from '../auth/types.tsx';
 
 
 export default function SignIn() {
-    /*const [values, setValues] = useState({
-        email: '',
-        password: ''
-    });*/
 
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
@@ -22,29 +18,8 @@ export default function SignIn() {
     const navigate = useNavigate();
     const auth = useAuth();
 
-    /*const handleSubmit = async (e) => {
-        e.preventDefault();
 
-    const trimmedValues = {
-            email: values.email.trim(),
-            password: values.password.trim()
-        };
-
-        try {
-            const response = await axios.post(`${API_URL}/auth/signIn`, trimmedValues);
-            if (response.data.message === 'User logged in successfully') {
-                // Navegar al panel de control
-                window.location.href('/Dashboard');
-            } else {
-                alert('Error logging in');
-            }
-        } catch (error) {
-            console.error('Error logging in:', error);
-            alert('Error logging in');
-        }
-    };*/
-
-    if (auth.isAuthenticated) {
+    if (localStorage.getItem('token')) {
         return <Navigate to='/Dashboard' />;
     }
 

@@ -2,6 +2,7 @@
 const router = require('express').Router();
 const { jsonResponse } = require('../lib/jsonResponse');
 const Login = require('../models/login');
+const { getTokenHeader } = require('../lib/getTokenHeader');
 
 
 
@@ -75,8 +76,71 @@ router.post('/signUp', async (req, res) => {
     }
 });
 
-router.get('/signOut', async (req, res) => {
+router.delete('/signOut', async (req, res) => {
+    try {
+        const refreshToken = getTokenHeader(req.headers);
+        if (!refreshToken) {
+            return res.status(401).json({
+                status: 401,
+                data: { error: 'Unauthorized' },
+            });
+        } else {
+            // Find the token in the database and delete it
+            const token = await Token.findOne({ where: { refreshToken } });
+            if (token) {
+                await token.destroy();
+                return res.status(200).json({
+                    status: 200,
+                    data: { message: 'User logged out successfully' },
+                });
+            } else {
+                return res.status(404).json({
+                    status: 404,
+                    data: { error: 'Token not found' },
+                });
+            }
+        }
+    } catch (error) {
+        return res.status(500).json({
+            status: 500,
+            data: { error: 'Internal server error' },
+        });
+    }
+});
 
+router.post('/profile', async (req, res) => {
+    const { name, lastName, email, deviceId } = req.body;
+
+    if (!name || !lastName || !email || !deviceId) {
+        return res.status(400).json(jsonResponse(400, {
+            error: 'All fields are required',
+        }));
+    }
+
+    try {
+        // Create a new instance of Login with the provided data
+        const login = new Login();
+        const emailExists = await login.emailExists(email);
+
+        if (emailExists) {
+            return res.status(400).json(jsonResponse(400, {
+                error: 'Email already exists',
+            }));
+        } else {
+            const login = new Login({ name, lastName, email, deviceId });
+            // Use await to save the login instance to the database
+            await login.save();
+            // Respond with a success message
+            res.status(200).json(jsonResponse(200, {
+                message: 'User created successfully',
+            }));
+        }  
+    } catch (error) {
+        // Handle any errors that occur during the save operation
+        res.status(500).json(jsonResponse(500, {
+            error: 'Error saving user to the database',
+        }));
+    }
 });
 
 module.exports = router;

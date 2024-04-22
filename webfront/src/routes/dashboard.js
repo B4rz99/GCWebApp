@@ -1,18 +1,16 @@
 import React from 'react';
 import 'leaflet/dist/leaflet.css';
 import Box from '@mui/material/Box';
-import AppBar from '../assets/AppBar';
+import AppBar from '../assets/AppBar.tsx';
 import LocationDash from '../assets/locationDash';
 import PresVariable from '../assets/presVariable';
 import CardVariable from '../assets/CardVariable';  
 import TempVariable from '../assets/tempVariable';
 import SatVariable from '../assets/satVariable';
-import { useAuth } from '../auth/authProvider.tsx';
 
 
 //Dashboard view rendering
 function dashboard() {
-  const auth = useAuth();
   const [selectedDevice, setSelectedDevice] = React.useState('');
 
   const handleSelectorChange = (selector) => {

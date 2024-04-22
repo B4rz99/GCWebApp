@@ -12,6 +12,7 @@ const AuthContext = createContext({
     saveEmail: (emailData: AuthResponse) => {},
     getRefreshToken: () => {},
     getEmail: () => undefined,
+    signOut: () => {},
 });
 
 export function AuthProvider ({children}: AuthProviderProps) {
@@ -91,6 +92,13 @@ export function AuthProvider ({children}: AuthProviderProps) {
         }
     }
 
+    function signOut() {
+        setIsAuthenticated(false);
+        setAccessToken('');
+        setEmail('');
+        localStorage.removeItem('token');
+    }
+
     function saveSessionInfo(emailInfo: User, accessToken: string, refreshToken: string) {
         setAccessToken(accessToken);
         setEmail(emailInfo);
@@ -116,7 +124,7 @@ export function AuthProvider ({children}: AuthProviderProps) {
     }
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, getAccessToken, saveEmail, getRefreshToken }}>
+        <AuthContext.Provider value={{ isAuthenticated, getAccessToken, saveEmail, getRefreshToken, signOut }}>
             {children}
         </AuthContext.Provider>
     );

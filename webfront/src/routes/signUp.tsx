@@ -8,7 +8,6 @@ import { Navigate } from 'react-router-dom';
 import { API_URL } from '../auth/constants';
 
 export default function SignUp() {
-
     const [name, setName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
@@ -19,7 +18,7 @@ export default function SignUp() {
     const navigate = useNavigate();
     const auth = useAuth();
 
-    if(auth.isAuthenticated) {
+    if (localStorage.getItem('token')) {
         return <Navigate to='/Dashboard' />;
     }
 
@@ -48,31 +47,6 @@ export default function SignUp() {
             return;
         }
     }
-    
-    /*const handleSubmit = (e) => {
-        e.preventDefault();
-
-        const trimmedValues = {
-            name: values.name.trim(),
-            lastName: values.lastName.trim(),
-            email: values.email.trim(),
-            password: values.password.trim()
-        };
-        
-        
-        axios.post(`${API_URL}/auth/signUp`, trimmedValues)
-        .then(res => {
-            if (res.data.message === 'User created successfully') {
-                navigate('/signIn');
-            } else {
-                alert('Error creating user');
-            }
-        })
-        .catch(err => { // Use .catch() for error handling
-            console.log(err);
-        });
-    }*/
-
     
 
     return (

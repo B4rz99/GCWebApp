@@ -11,9 +11,39 @@ import Card from '@mui/joy/Card';
 import CardActions from '@mui/joy/CardActions';
 import CardOverflow from '@mui/joy/CardOverflow';
 import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
-import AppBar from '../assets/AppBar';
+import AppBar from '../assets/AppBar.tsx';
 
 export default function MyProfile() {
+ /*   const [name, setName] = React.useState('');
+    const [lastName, setLastName] = React.useState('');
+    const [email, setEmail] = React.useState('');
+    const [deviceId, setDeviceId] = React.useState('');
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+
+      try {
+          const response = await fetch(`${API_URL}/auth/profile`, {
+              method : 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({name, lastName, email, deviceId})
+          });
+
+          if (response.ok) {
+              console.log('User created successfully');
+          } else {
+              console.log('Error creating user');
+          }
+      } catch (error) {
+          console.log(error);
+          const json = await response.json();
+          setError(json.body.error);
+          return;
+      }
+  }*/
+
     return (
       <Box sx={{ flex: 1, width: '100%' }}>
         <AppBar/>
@@ -43,25 +73,25 @@ export default function MyProfile() {
                   <FormControl
                     sx={{ display: { sm: 'flex-column', md: 'flex-row' }, gap: 2 }}
                   >
-                    <Input size="sm" placeholder="Nombre" defaultValue='Orlando' />
+                    <Input size="sm"/>
                   </FormControl>
                   <FormLabel>Apellido</FormLabel>
                   <FormControl
                     sx={{ display: { sm: 'flex-column', md: 'flex-row' }, gap: 2 }}
                   >
-                    <Input size="sm" placeholder="Apellido" defaultValue='Barboza'/>
+                    <Input size="sm"/>
                   </FormControl>
                   <FormLabel>Correo</FormLabel>
                   <FormControl
                     sx={{ display: { sm: 'flex-column', md: 'flex-row' }, gap: 2 }}
                   >
-                  <Input size="sm" type="email" placeholder="email" defaultValue="oalcala@uninorte.edu.co"/>
+                  <Input size="sm" type="email"/>
                   </FormControl>
                   <FormLabel>ID del Brazalete</FormLabel>
                   <FormControl
                     sx={{ display: { sm: 'flex-column', md: 'flex-row' }, gap: 2 }}
                   >
-                  <Input size="sm" placeholder="ID" defaultValue="123456"/>
+                  <Input size="sm"/>
                   </FormControl>
                 </Stack>
               </Stack>
