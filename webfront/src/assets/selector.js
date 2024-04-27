@@ -39,9 +39,9 @@ export default function BasicSelect({ onSelectorChange }) {
   };
 
   return (
-    <Box sx={{ minWidth: 120 }}>
-      <FormControl fullWidth>
-        <InputLabel id="simple-select">Device</InputLabel>
+    <Box sx={{ minWidth: 300 }}>
+      <FormControl sx={{ m:1, width: 300}}>
+        <InputLabel id="simple-select">Paciente</InputLabel>
         <Select
           labelId="simple-select"
           id="simple-select-1"

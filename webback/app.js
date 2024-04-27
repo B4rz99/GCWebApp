@@ -3,6 +3,9 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
 const authenticate = require('./auth/authenticate');
+const path = require('path');
+const bodyParser = require('body-parser');
+const session = require('express-session');
 
 const sequelize = require('./dbServer');
 const authRoutes = require('./routers/authRoutes');
@@ -15,6 +18,13 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
+app.use(bodyParser.json());
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false },
+}));
 
 app.use('/api', apiRoutes);
 
@@ -24,7 +34,14 @@ app.use('/auth', authRoutes);
 
 app.use('/api', authenticate, user);
 
-const port = process.env.PORT || 3001;
+const root = require('path').join(__dirname, '../webfront/build');
+app.use(express.static(root));
+
+app.use('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../webfront/build', 'index.html'));
+});
+
+const port = process.env.PORT || 80;
 
 sequelize.sync()
   .then(() => {

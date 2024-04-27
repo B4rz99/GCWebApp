@@ -6,6 +6,15 @@ import React from 'react';
 import { useAuth } from '../auth/authProvider.tsx';
 import { Navigate } from 'react-router-dom';
 import { API_URL } from '../auth/constants';
+import CssBaseline from '@mui/material/CssBaseline';
+import Box from '@mui/material/Box';
+import Avatar from '@mui/material/Avatar';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Link from '@mui/material/Link';
 
 export default function SignUp() {
     const [name, setName] = useState('');
@@ -13,7 +22,6 @@ export default function SignUp() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-
 
     const navigate = useNavigate();
     const auth = useAuth();
@@ -52,23 +60,99 @@ export default function SignUp() {
     return (
         <div>
             <AppBarOut />
-            <form className='form' onSubmit={handleSubmit}>
-                <h1>Regístrate</h1>
-                
-                <label htmlFor='name'>Nombre</label>
-                <input type="text" name='name' value={name} onChange={(e) => setName(e.target.value)}/*onChange={e => setValues({...values, name: e.target.value})}*//>
-
-                <label htmlFor='lastName'>Apellido</label>
-                <input type="text" name='lastName'  value={lastName} onChange={(e) => setLastName(e.target.value)} /*onChange={e => setValues({...values, lastName: e.target.value})}*//>
-
-                <label htmlFor='email'>Email</label>
-                <input type="text" name='email'  value={email} onChange={(e) => setEmail(e.target.value)}/*onChange={e => setValues({...values, email: e.target.value})}*//>
-
-                <label htmlFor='password'>Contraseña</label>
-                <input type="password" name='password'  value={password} onChange={(e) => setPassword(e.target.value)}/*onChange={e => setValues({...values, password: e.target.value})}*//>
-
-                <button type='submit'>Registrarse</button>
-            </form>
+            <CssBaseline />
+            <Box
+                sx={{
+                    marginTop: 8,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                }}
+            >
+                <Avatar sx={{ m: 1, bgcolor: '#1976d2' }}>
+                    <LockOutlinedIcon />
+                </Avatar>
+                <Typography component="h1" variant="h5">
+                    Regístrate
+                </Typography>
+                <Box
+                    component="form"
+                    noValidate
+                    sx={{ mt: 3 }}
+                    onSubmit={handleSubmit}
+                >
+                    <Grid container spacing={1}>
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                margin="normal"
+                                name="name"
+                                required
+                                fullWidth
+                                label="Nombre"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                autoFocus
+                                size="small"
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                label="Apellido"
+                                name="lastName"
+                                value={lastName}
+                                onChange={(e) => setLastName(e.target.value)}
+                                size="small"
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                label="Correo electrónico"
+                                name="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                autoComplete="email"
+                                autoFocus
+                                size="small"
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                name="password"
+                                label="Contraseña"
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                autoComplete="current-password"
+                                size="small"
+                            />
+                        </Grid>
+                    </Grid>
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2 }}
+                    >
+                        Regístrate
+                    </Button>
+                    <Grid container justifyContent="flex-end">
+                        <Grid item>
+                            <Link href="/signIn" variant="body2">
+                                ¿Ya tienes una cuenta? Inicia sesión
+                            </Link>
+                        </Grid>
+                    </Grid>
+                </Box>
+            </Box>
         </div>
     );
 }

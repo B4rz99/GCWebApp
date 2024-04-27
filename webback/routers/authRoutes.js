@@ -2,7 +2,10 @@
 const router = require('express').Router();
 const { jsonResponse } = require('../lib/jsonResponse');
 const Login = require('../models/login');
-const { getTokenHeader } = require('../lib/getTokenHeader');
+const { getTokenHeader } = require('../auth/getTokenHeader');
+const Relation = require('../models/relation');
+const Device = require('../models/device');
+const session = require('express-session');
 
 
 
@@ -30,6 +33,8 @@ router.post('/signIn', async (req, res) => {
         } else {
             const accessToken = login.createAccessToken();
             const refreshToken  = await login.createRefreshToken();
+
+            req.session.email = email;
         
             res.status(200).json(jsonResponse(200, {
                 accessToken,
@@ -63,13 +68,13 @@ router.post('/signUp', async (req, res) => {
             const login = new Login({ name, lastName, email, password });
             // Use await to save the login instance to the database
             await login.save();
-            // Respond with a success message
+            
             res.status(200).json(jsonResponse(200, {
                 message: 'User created successfully',
             }));
         }  
     } catch (error) {
-        // Handle any errors that occur during the save operation
+        
         res.status(500).json(jsonResponse(500, {
             error: 'Error saving user to the database',
         }));
@@ -86,7 +91,7 @@ router.delete('/signOut', async (req, res) => {
             });
         } else {
             // Find the token in the database and delete it
-            const token = await Token.findOne({ where: { refreshToken } });
+            const token = await Token.findOne({ where: { token } });
             if (token) {
                 await token.destroy();
                 return res.status(200).json({
@@ -108,35 +113,52 @@ router.delete('/signOut', async (req, res) => {
     }
 });
 
-router.post('/profile', async (req, res) => {
-    const { name, lastName, email, deviceId } = req.body;
+router.post('/patient', async (req, res) => {
+    const { name, lastName, emailP, password, deviceId } = req.body;
+    const { email } = req.session;
 
-    if (!name || !lastName || !email || !deviceId) {
+    if (!name || !lastName || !emailP || !password || !deviceId) {
         return res.status(400).json(jsonResponse(400, {
             error: 'All fields are required',
         }));
     }
 
     try {
-        // Create a new instance of Login with the provided data
-        const login = new Login();
-        const emailExists = await login.emailExists(email);
+        
+        const relation = new Relation();
+        const emailExists = await relation.emailExists(emailP);
 
         if (emailExists) {
             return res.status(400).json(jsonResponse(400, {
                 error: 'Email already exists',
             }));
+        }
+
+        const deviceExists = await relation.deviceExists(deviceId);
+        if (deviceExists) {
+            return res.status(400).json(jsonResponse(400, {
+                error: 'Device already exists',
+            }));
+
         } else {
-            const login = new Login({ name, lastName, email, deviceId });
-            // Use await to save the login instance to the database
+            const relation = new Relation({ deviceId, emailD: email, emailP });
+            await relation.save();
+
+            const login = new Login({ name, lastName, email: emailP, password });
             await login.save();
-            // Respond with a success message
+            
+            const device = new Device();
+            await Device.update(
+                { Status: true }, 
+                { where: { DeviceId: deviceId } } 
+            );
+
             res.status(200).json(jsonResponse(200, {
-                message: 'User created successfully',
+                message: 'User patient created successfully',
             }));
         }  
     } catch (error) {
-        // Handle any errors that occur during the save operation
+        
         res.status(500).json(jsonResponse(500, {
             error: 'Error saving user to the database',
         }));

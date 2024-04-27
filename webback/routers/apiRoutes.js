@@ -179,6 +179,21 @@ router.get('/realTime', async (req, res) => {
     }
   });
 
-  
+  router.get('/availableDevices', async (req, res) => {
+    try {
+        // Realizar la consulta para obtener todos los dispositivos disponibles
+        const availableDevices = await Device.findAll({
+            where: {
+                Status: false
+            }
+        })
+        // Retornar los datos de los dispositivos en la respuesta
+        res.json(availableDevices);
+    } catch (error) {
+        // En caso de error, manejarlo y enviar una respuesta de error
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 module.exports = router;

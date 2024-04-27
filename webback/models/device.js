@@ -11,11 +11,10 @@ const Device = sequelize.define('Device', {
 		type: DataTypes.STRING,
 		allowNull: false,
 	},
-	Email: {
-		type: DataTypes.STRING,
+	Status : {
+		type: DataTypes.BOOLEAN,
 		allowNull: false,
 	},
-	
 },{
 	freezeTableName: true,
 	timestamps: false,

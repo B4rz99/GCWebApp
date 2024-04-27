@@ -6,6 +6,19 @@ import { Navigate } from 'react-router-dom';
 import { API_URL } from '../auth/constants';
 import AppBarOut from '../assets/AppBarOut';
 import { AuthResponseError } from '../auth/types.tsx';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import TextField from '@mui/material/TextField';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import Link from '@mui/material/Link';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Typography from '@mui/material/Typography';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Container from '@mui/material/Container';
 
 
 export default function SignIn() {
@@ -60,17 +73,72 @@ export default function SignIn() {
 
     return (
         <div>
-            <AppBarOut />
-            <form className='form' onSubmit={handleSubmit}>
-                <h1>Inicia Sesión</h1>
-                <label htmlFor='email'>Email</label>
-                <input type="text" name='email' value={email} onChange={(e) => setEmail(e.target.value)} /*onChange={e => setValues({ ...values, email: e.target.value })}*/ />
-
-                <label htmlFor='password'>Contraseña</label>
-                <input type="password" name='password' value={password} onChange={(e) => setPassword(e.target.value)} /*onChange={e => setValues({ ...values, password: e.target.value })}*/ />
-
-                <button type='submit'>Iniciar Sesión</button>
-            </form>
+        <AppBarOut />
+            <Container component="main" maxWidth="xs">
+            <CssBaseline />
+            <Box
+              sx={{
+                marginTop: 8,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
+              <Avatar sx={{ m: 1, bgcolor: '#1976d2' }}>
+                <LockOutlinedIcon />
+              </Avatar>
+              <Typography component="h1" variant="h5">
+                Iniciar Sesión
+              </Typography>
+              <Box 
+              component="form"
+              noValidate
+              onSubmit={handleSubmit} 
+              noValidate sx={{ mt: 1 }}>
+                <TextField
+                    label="Correo Electrónico"
+                    margin="normal"
+                    required
+                    fullWidth
+                    type="text" 
+                    name='email' 
+                    value={email} 
+                    onChange={(e) => setEmail(e.target.value)}
+                    autoComplete="email"
+                    autoFocus
+                    size="small"
+                />
+                <TextField
+                    label="Contraseña"
+                    margin="normal"
+                    required
+                    fullWidth
+                    type="password" 
+                    name='password' 
+                    value={password} 
+                    onChange={(e) => setPassword(e.target.value)}
+                    autoComplete="password"
+                    autoFocus
+                    size="small"
+                />
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                >
+                  Iniciar Sesión
+                </Button>
+                <Grid container>
+                  <Grid item>
+                    <Link href='/signUp' variant="body2">
+                      Regístrate
+                    </Link>
+                  </Grid>
+                </Grid>
+              </Box>
+            </Box>
+            </Container>
         </div>
     );
 }
