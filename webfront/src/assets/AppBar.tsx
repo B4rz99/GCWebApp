@@ -20,7 +20,7 @@ import { AuthResponseError } from '../auth/types.tsx';
 
 
 const pages = ['Dashboard', 'Historial'];
-const settings = ['Registro Paciente', 'Dashboard', 'Cerrar Sesión'];
+const settings = ['Registro Paciente', 'Liberación', 'Dashboard', 'Cerrar Sesión'];
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -54,6 +54,8 @@ function ResponsiveAppBar() {
       navigate('/Dashboard');
     } else if (setting === 'Registro Paciente') {
       navigate('/Profile');
+    } else if (setting === 'Liberación') {
+      navigate('/Release');
     }
     handleCloseUserMenu();
   };
@@ -63,7 +65,11 @@ function ResponsiveAppBar() {
       navigate('/Dashboard');
     } else if (page === 'Historial') {
       navigate('/Historics');
-    } 
+    } else if (page === 'Perfil') {
+      navigate('/Profile');
+    } else if (page === 'Liberación') {
+      navigate('/Release');
+    }
     handleCloseUserMenu();
   };
 
@@ -140,6 +146,7 @@ function ResponsiveAppBar() {
                 letterSpacing: '.1rem',
                 textDecoration: 'none',
                 color: 'white'
+                
               }}
             >
               GeoCardio

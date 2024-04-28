@@ -10,6 +10,8 @@ import { AuthProvider } from './auth/authProvider.tsx';
 import ProtectedRoute from './routes/protectedRoute';
 import { DataProvider } from './DataContext';
 import Popup from './assets/popup.js';
+import Release from './routes/release';
+
 const router = createBrowserRouter(createRoutesFromElements(
     <Route path="/" element={<Root />} >
       <Route path="SignUp" element={<SignUp />} />
@@ -18,6 +20,7 @@ const router = createBrowserRouter(createRoutesFromElements(
         <Route path="Dashboard" element={ <Dashboard/> }/>
         <Route path="Profile" element={ <Profile/> }/>
         <Route path="Historics" element={ <Historics/>}/>
+        <Route path="Release" element={ <Release/> } />
       </Route>
     </Route>
 ));

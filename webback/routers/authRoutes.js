@@ -165,4 +165,48 @@ router.post('/patient', async (req, res) => {
     }
 });
 
+router.post('/bracelet', async (req, res) => {
+    const { deviceId } = req.body;
+
+    if (!deviceId) {
+        return res.status(400).json(jsonResponse(400, {
+            error: 'All fields are required',
+        }));
+    }
+
+    try {
+        // Update Device table
+        await Device.update(
+            { Status: false },
+            { where: { DeviceId: deviceId } }
+        );
+
+        // Delete a row in the Relation table where the column deviceId matches the provided deviceId
+        const relationRow = await Relation.findOne({ where: { deviceId: deviceId } });
+
+        if (relationRow) {
+            // Retrieve emailP from the Relation table
+            const { emailP } = relationRow;
+
+            // Delete the row in the Relation table
+            await Relation.destroy({ where: { deviceId: deviceId } });
+
+            // Delete the row in the Login table where email matches emailP
+            await Login.destroy({ where: { email: emailP } });
+
+            res.status(200).json(jsonResponse(200, {
+                message: 'Bracelet released and associated data removed successfully',
+            }));
+        } else {
+            res.status(404).json(jsonResponse(404, {
+                error: 'No relation found with the provided deviceId',
+            }));
+        }
+    } catch (error) {
+        res.status(500).json(jsonResponse(500, {
+            error: 'Error releasing bracelet or associated data from the database',
+        }));
+    }
+});
+
 module.exports = router;
