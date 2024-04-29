@@ -149,7 +149,9 @@ router.post('/patient', async (req, res) => {
             
             const device = new Device();
             await Device.update(
-                { Status: true }, 
+                { Status: true, 
+                  Name: `${name} ${lastName}`  
+                }, 
                 { where: { DeviceId: deviceId } } 
             );
 
@@ -177,7 +179,9 @@ router.post('/bracelet', async (req, res) => {
     try {
         // Update Device table
         await Device.update(
-            { Status: false },
+            { Status: false, 
+              Name: ''  
+            },
             { where: { DeviceId: deviceId } }
         );
 
