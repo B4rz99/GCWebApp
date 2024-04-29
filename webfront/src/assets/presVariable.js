@@ -43,7 +43,7 @@ const presVariable = ({ selectedDevice}) => {
         <Paper elevation={4} sx={{width: {xs: 250, md:200, lg: 250}}}>
           <Box paddingX={3}>
             <Typography component='h1'>
-              Presión
+              Tensión Arterial
             </Typography>
           </Box>
           <Box 

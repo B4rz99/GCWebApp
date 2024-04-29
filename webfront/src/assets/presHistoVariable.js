@@ -84,7 +84,7 @@ export default function PresHistoVariable({ startTime, endTime, selectedDevice }
         <Box height={250} width={400}>
           <Paper elevation={4}>
             <Typography component='h1' sx={{ mx: 4 }}>
-              Presión
+              Tensión Arterial
             </Typography>
             <LineChart
               height={250}

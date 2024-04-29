@@ -6,6 +6,7 @@ import Location from '../assets/location';
 import PulseHistoVariable from '../assets/pulseHistoVariable';
 import TempHistoVariable from '../assets/tempHistoVariable';
 import SatHistoVariable from '../assets/satHistoVariable';
+import TableHistorics from '../assets/tableHistorics';
 
 export default function historics() {
 
@@ -42,6 +43,9 @@ export default function historics() {
         endTime={endTime}
         selectedDevice={selectedDevice}
       />
+      <Box display='flex' justifyContent='center'>
+        <TableHistorics startTime={startTime} endTime={endTime} selectedDevice={selectedDevice}/>
+      </Box>
     </div>
   )
 }

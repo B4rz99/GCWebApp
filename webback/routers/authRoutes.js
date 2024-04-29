@@ -180,7 +180,7 @@ router.post('/bracelet', async (req, res) => {
         // Update Device table
         await Device.update(
             { Status: false, 
-              Name: ''  
+              Name: 'Brazalete sin asignar'  
             },
             { where: { DeviceId: deviceId } }
         );

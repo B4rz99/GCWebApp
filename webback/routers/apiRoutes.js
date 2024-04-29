@@ -83,6 +83,26 @@ router.get('/temperature', async (req, res) => {
     }
 });
 
+router.get('/pressure', async (req, res) => {
+    try {
+        const { deviceId, startDate, endDate } = req.query;
+        if (!deviceId) {
+            return res.status(400).json({ error: 'Device ID Required.' });
+        }
+        let filterOptions = { DeviceId: deviceId };
+        if (startDate && endDate) {
+            filterOptions.TimeStamp = {
+                [Op.between]: [new Date(startDate), new Date(endDate)],
+            };
+        }
+        const pressureData = await Pressure.findAll({ where: filterOptions });
+        res.json(pressureData);
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 router.get('/position', async (req, res) => {
     try {
         const { deviceId, startDate, endDate } = req.query;
@@ -208,6 +228,165 @@ router.get('/unavailableDevices', async (req, res) => {
         res.json(unavailableDevices);
     } catch (error) {
         // En caso de error, manejarlo y enviar una respuesta de error
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+router.get('/atypicalOxygen', async (req, res) => {
+    try {
+        const { deviceId, startDate, endDate } = req.query;
+        
+        // Check if deviceId is provided
+        if (!deviceId) {
+            return res.status(400).json({ error: 'Device ID Required.' });
+        }
+
+        // Initialize filter options
+        let filterOptions = { DeviceId: deviceId };
+
+        // Add date range filter if both startDate and endDate are provided
+        if (startDate && endDate) {
+            filterOptions.TimeStamp = {
+                [Op.between]: [new Date(startDate), new Date(endDate)],
+            };
+        }
+
+        // Add condition for Oxygen level below 95
+        filterOptions.Oxygen = {
+            [Op.lt]: 95,
+        };
+
+        // Query the database with the specified filter options
+        const oxygenData = await Oxygen.findAll({ where: filterOptions });
+        // Respond with the retrieved data
+        res.json(oxygenData);
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+router.get('/atypicalHeartRate', async (req, res) => {
+    try {
+        const { deviceId, startDate, endDate } = req.query;
+        
+        // Check if deviceId is provided
+        if (!deviceId) {
+            return res.status(400).json({ error: 'Device ID Required.' });
+        }
+
+        // Initialize filter options
+        let filterOptions = { DeviceId: deviceId };
+
+        // Add date range filter if both startDate and endDate are provided
+        if (startDate && endDate) {
+            filterOptions.TimeStamp = {
+                [Op.between]: [new Date(startDate), new Date(endDate)],
+            };
+        }
+
+        // Add conditions for HeartRate below 60 or above 80
+        filterOptions.HeartRate = {
+            [Op.or]: [
+                { [Op.lt]: 60 },
+                { [Op.gt]: 80 },
+            ],
+        };
+
+        // Query the database with the specified filter options
+        const heartRateData = await HeartRate.findAll({ where: filterOptions });
+
+        // Respond with the retrieved data
+        res.json(heartRateData);
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+router.get('/atypicalTemperature', async (req, res) => {
+    try {
+        const { deviceId, startDate, endDate } = req.query;
+        
+        // Check if deviceId is provided
+        if (!deviceId) {
+            return res.status(400).json({ error: 'Device ID Required.' });
+        }
+
+        // Initialize filter options
+        let filterOptions = { DeviceId: deviceId };
+
+        // Add date range filter if both startDate and endDate are provided
+        if (startDate && endDate) {
+            filterOptions.TimeStamp = {
+                [Op.between]: [new Date(startDate), new Date(endDate)],
+            };
+        }
+
+        // Add conditions for Temperature below 35.1 or above 37.5
+        filterOptions.Temperature = {
+            [Op.or]: [
+                { [Op.lt]: 35.1 },
+                { [Op.gt]: 37.5 },
+            ],
+        };
+
+        // Query the database with the specified filter options
+        const temperatureData = await Temperature.findAll({ where: filterOptions });
+
+        // Respond with the retrieved data
+        res.json(temperatureData);
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+router.get('/atypicalPressure', async (req, res) => {
+    try {
+        const { deviceId, startDate, endDate } = req.query;
+
+        // Check if deviceId is provided
+        if (!deviceId) {
+            return res.status(400).json({ error: 'Device ID Required.' });
+        }
+
+        // Initialize filter options
+        let filterOptions = { DeviceId: deviceId };
+
+        // Add date range filter if both startDate and endDate are provided
+        if (startDate && endDate) {
+            filterOptions.TimeStamp = {
+                [Op.between]: [new Date(startDate), new Date(endDate)],
+            };
+        }
+
+        // Add conditions for Sistolic and Diastolic pressure
+        filterOptions = {
+            ...filterOptions,
+            [Op.and]: [
+                {
+                    [Op.or]: [
+                        { Sistolic: { [Op.lt]: 80 } },
+                        { Sistolic: { [Op.gt]: 120 } },
+                    ],
+                },
+                {
+                    [Op.or]: [
+                        { Diastolic: { [Op.lt]: 60 } },
+                        { Diastolic: { [Op.gt]: 80 } },
+                    ],
+                },
+            ],
+        };
+
+        // Query the database with the specified filter options
+        const pressureData = await Pressure.findAll({ where: filterOptions });
+
+        // Respond with the retrieved data
+        res.json(pressureData);
+    } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
