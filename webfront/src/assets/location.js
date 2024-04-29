@@ -1,35 +1,30 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import 'leaflet/dist/leaflet.css';
-import { MapContainer, TileLayer, Marker } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Polyline, useMap } from 'react-leaflet';
 import Box from '@mui/material/Box';
-import markerIconPng from "leaflet/dist/images/marker-icon.png"
-import { Icon } from 'leaflet'
-import Selector from './selector.js'
-import Calendar from './calendar.js'
-import { Polyline } from 'react-leaflet';
+import markerIconPng from "leaflet/dist/images/marker-icon.png";
+import { Icon } from 'leaflet';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
 import { API_URL } from '../auth/constants';
-import TableHistorics from './tableHistorics.js';
+import TableHistorics from './tableHistorics';
+import Calendar from './calendar';
+import Selector from './selector';
 
-export default function LocationDash({onDateChange, onSelectorChange, startTime, endTime, selectedDevice}) {
-  console.log('Props received:', { onDateChange, onSelectorChange, startTime, endTime, selectedDevice });  
-  const [mapData, setMapData] = useState([]);
+export default function LocationDash({ onDateChange, onSelectorChange, startTime, endTime, selectedDevice }) {
+    const [mapData, setMapData] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
-          if (!selectedDevice) return;
+            if (!selectedDevice) return;
             try {
                 const response = await axios.get(`${API_URL}/api/position`, {
                     params: {
                         deviceId: selectedDevice,
                         startDate: startTime,
                         endDate: endTime,
-                    }
+                    },
                 });
                 setMapData(response.data);
-                console.log(response.data);
-                console.log('mapData:', response.data);
             } catch (error) {
                 console.error('Error:', error);
             }
@@ -38,11 +33,29 @@ export default function LocationDash({onDateChange, onSelectorChange, startTime,
         fetchData();
     }, [startTime, endTime, selectedDevice]);
 
+    // Calculate bounds based on positions
+    const allPositions = mapData.map(position => [position.Latitude, position.Longitude]);
+    const bounds = allPositions.length > 0 ? allPositions : [[10.96854, -74.78132]];
+
+    // Define bounds for the city of Barranquilla
+    const barranquillaBounds = [
+        [10.96854, -74.88132], // Southwest corner of the city
+        [11.0192, -74.73818], // Northeast corner of the city
+    ];
+
+    // Access the map instance and set bounds
+    function SetMapBounds() {
+        const map = useMap();
+        if (allPositions.length > 0) {
+            map.fitBounds(bounds);
+        } else {
+            map.fitBounds(barranquillaBounds);
+        }
+        return null;
+    }
+
     // Get the last position fetched
     const lastPosition = mapData.length > 0 ? mapData[mapData.length - 1] : null;
-
-    const allPositions = mapData.map(position => [position.Latitude, position.Longitude]);
-
 
     return (
         <div>
@@ -59,11 +72,15 @@ export default function LocationDash({onDateChange, onSelectorChange, startTime,
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     />
                     {lastPosition && (
-                        <Marker position={[lastPosition.Latitude, lastPosition.Longitude]} icon={new Icon({ iconUrl: markerIconPng, iconSize: [25, 41], iconAnchor: [12, 41] })} />
+                        <Marker
+                            position={[lastPosition.Latitude, lastPosition.Longitude]}
+                            icon={new Icon({ iconUrl: markerIconPng, iconSize: [25, 41], iconAnchor: [12, 41] })}
+                        />
                     )}
                     <Polyline positions={allPositions} color="red" />
+                    <SetMapBounds />
                 </MapContainer>
-                <TableHistorics startTime={startTime} endTime={endTime} selectedDevice={selectedDevice}/>
+                <TableHistorics startTime={startTime} endTime={endTime} selectedDevice={selectedDevice} />
                 <Calendar onDateChange={onDateChange} />
                 <Selector onSelectorChange={onSelectorChange} />
             </Box>

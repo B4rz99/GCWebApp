@@ -8,14 +8,18 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
+import Typography from '@mui/material/Typography';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import { API_URL } from '../auth/constants';
 import { useEffect, useState } from 'react';
+import TableSortLabel from '@mui/material/TableSortLabel';
 
 const columns = [
-  { id: 'variable', label: 'Variable', minWidth: 100 },
-  { id: 'data', label: 'Dato', minWidth: 100 },
-  { id: 'date', label: 'Fecha', minWidth: 100 },
-  { id: 'time', label: 'Hora', minWidth: 100 },
+  { id: 'variable', label: 'Variable', minWidth: 100, sortable: true },
+  { id: 'data', label: 'Dato', minWidth: 100, sortable: true },
+  { id: 'date', label: 'Fecha', minWidth: 100, sortable: true },
+  { id: 'time', label: 'Hora', minWidth: 100, sortable: true },
 ];
 
 function formatDate(timestamp) {
@@ -30,6 +34,13 @@ export default function StickyHeadTable({ startTime, endTime, selectedDevice }) 
   const [tableData, setTableData] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('');
+  const [selectedTypes, setSelectedTypes] = useState({
+    Oxygen: true,
+    HeartRate: true,
+    Temperature: true,
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -102,9 +113,89 @@ export default function StickyHeadTable({ startTime, endTime, selectedDevice }) 
     setPage(0);
   };
 
+  const handleSort = (columnId) => {
+    const isAsc = orderBy === columnId && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(columnId);
+  };
+
+  // Function to filter data based on selected types
+  const filterDataByType = (data) => {
+    return data.filter((row) => {
+      if (row.variable === 'Oxígeno' && !selectedTypes.Oxygen) return false;
+      if (row.variable === 'Frec. Cardiaca' && !selectedTypes.HeartRate) return false;
+      if (row.variable === 'Temperatura' && !selectedTypes.Temperature) return false;
+      return true;
+    });
+  };
+
+  // Function to handle checkbox change for data types
+  const handleCheckboxChange = (event) => {
+    const { name, checked } = event.target;
+    setSelectedTypes((prevSelectedTypes) => ({
+      ...prevSelectedTypes,
+      [name]: checked,
+    }));
+  };
+
+  // Sort data based on the order and orderBy states
+  const sortedData = React.useMemo(() => {
+    if (orderBy) {
+      return [...tableData].sort((a, b) => {
+        const aValue = a[orderBy];
+        const bValue = b[orderBy];
+
+        if (aValue < bValue) {
+          return order === 'asc' ? -1 : 1;
+        }
+        if (aValue > bValue) {
+          return order === 'asc' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+
+    return tableData;
+  }, [tableData, orderBy, order]);
+
+  // Filter data based on the selected types
+  const filteredData = React.useMemo(() => {
+    return filterDataByType(sortedData);
+  }, [sortedData, selectedTypes]);
+
   return (
     <Paper sx={{ width: '50%', overflow: 'hidden' }}>
-      <TableContainer sx={{ maxHeight: 440 }}>
+      <Typography variant="h6" gutterBottom sx={{ padding: '5px 20px' }}>
+        Datos Atípicos
+      </Typography>
+      <div style={{ padding: '0px 20px' }}>
+        <FormControlLabel
+          control={<Checkbox
+            checked={selectedTypes.Oxygen}
+            onChange={handleCheckboxChange}
+            name="Oxygen"
+          />}
+          label="Oxígeno"
+        />
+        <FormControlLabel
+          control={<Checkbox
+            checked={selectedTypes.HeartRate}
+            onChange={handleCheckboxChange}
+            name="HeartRate"
+          />}
+          label="Frec. Cardiaca"
+        />
+        <FormControlLabel
+          control={<Checkbox
+            checked={selectedTypes.Temperature}
+            onChange={handleCheckboxChange}
+            name="Temperature"
+          />}
+          label="Temperatura"
+        />
+      </div>
+
+      <TableContainer sx={{ maxHeight: 350 }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -114,13 +205,23 @@ export default function StickyHeadTable({ startTime, endTime, selectedDevice }) 
                   align="left"
                   style={{ minWidth: column.minWidth }}
                 >
-                  {column.label}
+                  {column.sortable ? (
+                    <TableSortLabel
+                      active={orderBy === column.id}
+                      direction={orderBy === column.id ? order : 'asc'}
+                      onClick={() => handleSort(column.id)}
+                    >
+                      {column.label}
+                    </TableSortLabel>
+                  ) : (
+                    column.label
+                  )}
                 </TableCell>
               ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {tableData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
+            {filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
               <TableRow hover role="checkbox" tabIndex={-1} key={index}>
                 {columns.map((column) => {
                   const value = row[column.id];
@@ -140,7 +241,7 @@ export default function StickyHeadTable({ startTime, endTime, selectedDevice }) 
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={tableData.length}
+        count={filteredData.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
