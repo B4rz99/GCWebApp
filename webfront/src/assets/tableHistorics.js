@@ -1,4 +1,5 @@
 import * as React from 'react';
+import axios from 'axios';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -7,37 +8,90 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
+import { API_URL } from '../auth/constants';
+import { useEffect, useState } from 'react';
 
 const columns = [
-  { id: 'name', label: 'Name', minWidth: 170 },
+  { id: 'variable', label: 'Variable', minWidth: 100 },
+  { id: 'data', label: 'Dato', minWidth: 100 },
+  { id: 'date', label: 'Fecha', minWidth: 100 },
+  { id: 'time', label: 'Hora', minWidth: 100 },
 ];
 
-function createData(name, code, population, size) {
-  const density = population / size;
-  return { name, code, population, size, density };
+function formatDate(timestamp) {
+  const date = new Date(timestamp);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
 }
 
-const rows = [
-  createData('India', 'IN', 1324171354, 3287263),
-  createData('China', 'CN', 1403500365, 9596961),
-  createData('Italy', 'IT', 60483973, 301340),
-  createData('United States', 'US', 327167434, 9833520),
-  createData('Canada', 'CA', 37602103, 9984670),
-  createData('Australia', 'AU', 25475400, 7692024),
-  createData('Germany', 'DE', 83019200, 357578),
-  createData('Ireland', 'IE', 4857000, 70273),
-  createData('Mexico', 'MX', 126577691, 1972550),
-  createData('Japan', 'JP', 126317000, 377973),
-  createData('France', 'FR', 67022000, 640679),
-  createData('United Kingdom', 'GB', 67545757, 242495),
-  createData('Russia', 'RU', 146793744, 17098246),
-  createData('Nigeria', 'NG', 200962417, 923768),
-  createData('Brazil', 'BR', 210147125, 8515767),
-];
+export default function StickyHeadTable({ startTime, endTime, selectedDevice }) {
+  const [tableData, setTableData] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
-export default function StickyHeadTable() {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!selectedDevice) return;
+
+      try {
+        // Fetch data from all three APIs concurrently
+        const [oxygenResponse, heartRateResponse, temperatureResponse] = await Promise.all([
+          axios.get(`${API_URL}/api/atypicalOxygen`, {
+            params: {
+              deviceId: selectedDevice,
+              startDate: startTime,
+              endDate: endTime,
+            },
+          }),
+          axios.get(`${API_URL}/api/atypicalHeartRate`, {
+            params: {
+              deviceId: selectedDevice,
+              startDate: startTime,
+              endDate: endTime,
+            },
+          }),
+          axios.get(`${API_URL}/api/atypicalTemperature`, {
+            params: {
+              deviceId: selectedDevice,
+              startDate: startTime,
+              endDate: endTime,
+            },
+          }),
+        ]);
+
+        // Combine data and transform it for the table
+        const combinedData = [
+          ...oxygenResponse.data.map((item) => ({
+            variable: 'Oxígeno',
+            data: item.Oxygen,
+            date: formatDate(item.TimeStamp),
+            time: item.TimeStamp.split('T')[1].split('.')[0],
+          })),
+          ...heartRateResponse.data.map((item) => ({
+            variable: 'Frec. Cardiaca',
+            data: item.HeartRate,
+            date: formatDate(item.TimeStamp),
+            time: item.TimeStamp.split('T')[1].split('.')[0],
+          })),
+          ...temperatureResponse.data.map((item) => ({
+            variable: 'Temperatura',
+            data: item.Temperature,
+            date: formatDate(item.TimeStamp),
+            time: item.TimeStamp.split('T')[1].split('.')[0],
+          })),
+        ];
+
+        // Update the table data state
+        setTableData(combinedData);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
+    fetchData();
+  }, [startTime, endTime, selectedDevice]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -49,7 +103,7 @@ export default function StickyHeadTable() {
   };
 
   return (
-    <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+    <Paper sx={{ width: '50%', overflow: 'hidden' }}>
       <TableContainer sx={{ maxHeight: 440 }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
@@ -57,7 +111,7 @@ export default function StickyHeadTable() {
               {columns.map((column) => (
                 <TableCell
                   key={column.id}
-                  align={column.align}
+                  align="left"
                   style={{ minWidth: column.minWidth }}
                 >
                   {column.label}
@@ -66,31 +120,27 @@ export default function StickyHeadTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => {
-                return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                    {columns.map((column) => {
-                      const value = row[column.id];
-                      return (
-                        <TableCell key={column.id} align={column.align}>
-                          {column.format && typeof value === 'number'
-                            ? column.format(value)
-                            : value}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
+            {tableData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
+              <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                {columns.map((column) => {
+                  const value = row[column.id];
+                  return (
+                    <TableCell key={column.id} align="left">
+                      {column.format && typeof value === 'number'
+                        ? column.format(value)
+                        : value}
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </TableContainer>
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={rows.length}
+        count={tableData.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}

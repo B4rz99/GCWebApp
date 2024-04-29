@@ -26,7 +26,6 @@ function dashboard() {
         marginY={3}
         marginX={6}
       >
-        
         <CardVariable selectedDevice={selectedDevice}/>
         <TempVariable selectedDevice={selectedDevice}/>
         <SatVariable selectedDevice={selectedDevice}/>

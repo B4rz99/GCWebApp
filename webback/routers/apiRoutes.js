@@ -6,7 +6,7 @@ const { Op } = require('sequelize');
 const sequelize = require('sequelize')
 const Device = require('../models/device');
 const HeartRate = require('../models/heartRate');
-
+const Pressure = require('../models/pressure');
 const Oxygen = require('../models/oxygen');
 const Position = require('../models/position');
 const Temperature = require('../models/temperature');

@@ -10,6 +10,7 @@ import { Polyline } from 'react-leaflet';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { API_URL } from '../auth/constants';
+import TableHistorics from './tableHistorics.js';
 
 export default function LocationDash({onDateChange, onSelectorChange, startTime, endTime, selectedDevice}) {
   console.log('Props received:', { onDateChange, onSelectorChange, startTime, endTime, selectedDevice });  
@@ -62,6 +63,7 @@ export default function LocationDash({onDateChange, onSelectorChange, startTime,
                     )}
                     <Polyline positions={allPositions} color="red" />
                 </MapContainer>
+                <TableHistorics startTime={startTime} endTime={endTime} selectedDevice={selectedDevice}/>
                 <Calendar onDateChange={onDateChange} />
                 <Selector onSelectorChange={onSelectorChange} />
             </Box>
