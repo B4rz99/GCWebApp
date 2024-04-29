@@ -74,9 +74,6 @@ const CardVariable = ({ selectedDevice }) => {
                   mr: 4, 
               }}
           >
-          <img src='https://static.wixstatic.com/media/f434cf_ce4ec99f85af48eeaafbbb61089ce801~mv2.gif' 
-          className='hrt'
-          />
           </Grid>
         </Paper>
       </ThemeProvider>

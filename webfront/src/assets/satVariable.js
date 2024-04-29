@@ -74,9 +74,6 @@ const SatVariable = ({ selectedDevice }) => {
                   mr: 4, 
               }}
           >
-          <img src='https://img.freepik.com/vector-premium/gota-globulos-rojos-saturacion-oxigeno-sangre-o2-conceptos-medicos-cientificos_228260-600.jpg'
-          className='drop'
-          />
           </Grid>
         </Paper>
       </ThemeProvider>

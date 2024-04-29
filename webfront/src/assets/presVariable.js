@@ -68,9 +68,6 @@ const presVariable = ({ selectedDevice}) => {
                   mr: 2,
               }}
           >
-          <img src='https://img.freepik.com/vector-premium/esfigmomanometro-azul-aislado-sobre-fondo-blanco-vector_24908-34748.jpg' 
-            className='pres'
-          />
           </Grid>
         </Paper>
       </ThemeProvider>
