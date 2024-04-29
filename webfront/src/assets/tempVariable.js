@@ -88,6 +88,9 @@ const TempVariable = ({ selectedDevice }) => {
               mr: 2,
             }}
           >
+          <img src='https://cdn-icons-png.flaticon.com/512/1247/1247137.png'
+              className='ter'
+          />
           </Grid>
         </Paper>
       </ThemeProvider>
