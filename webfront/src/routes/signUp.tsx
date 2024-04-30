@@ -1,9 +1,5 @@
-import AppBarOut from '../assets/AppBarOut';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios'; // Import axios using ES6 import syntax
-import React from 'react';
-import { useAuth } from '../auth/authProvider.tsx';
 import { Navigate } from 'react-router-dom';
 import { API_URL } from '../auth/constants';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -15,6 +11,8 @@ import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Link from '@mui/material/Link';
+import Alert from '@mui/material/Alert';
+import AppBarOut from '../assets/AppBarOut';
 
 export default function SignUp() {
     const [name, setName] = useState('');
@@ -22,40 +20,49 @@ export default function SignUp() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [success, setSuccess] = useState(false);
 
     const navigate = useNavigate();
-    const auth = useAuth();
 
     if (localStorage.getItem('token')) {
         return <Navigate to='/Dashboard' />;
     }
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    // Define a regular expression to validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!emailRegex.test(email)) {
+            setError('El formato del correo electrónico es inválido.');
+            return;
+        }
 
         try {
             const response = await fetch(`${API_URL}/auth/signUp`, {
-                method : 'POST',
+                method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({name, lastName, email, password})
+                body: JSON.stringify({ name, lastName, email, password }),
             });
 
             if (response.ok) {
-                console.log('User created successfully');
-                navigate('/signIn');
+                setSuccess(true);
+                // Optional: You can navigate to another page after a delay, e.g., sign-in page
+                setTimeout(() => {
+                    navigate('/signIn');
+                }, 2000);
             } else {
-                console.log('Error creating user');
+                const json = await response.json();
+                setError(json.body.error || 'Ha ocurrido un error desconocido');
             }
         } catch (error) {
-            console.log(error);
-            const json = await response.json() as AuthResponseError;
-            setError(json.body.error);
-            return;
+            console.error(error);
+            setError('Falló la conexión con el servidor');
         }
-    }
-    
+    };
 
     return (
         <div>
@@ -75,82 +82,96 @@ export default function SignUp() {
                 <Typography component="h1" variant="h5">
                     Regístrate
                 </Typography>
+
                 <Box
-                    component="form"
-                    noValidate
-                    sx={{ mt: 3 }}
-                    onSubmit={handleSubmit}
+                    sx={{ width: '100%', maxWidth: 'sm' }}
                 >
-                    <Grid container spacing={1}>
-                        <Grid item xs={12} sm={6}>
-                            <TextField
-                                margin="normal"
-                                name="name"
-                                required
-                                fullWidth
-                                label="Nombre"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                autoFocus
-                                size="small"
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                label="Apellido"
-                                name="lastName"
-                                value={lastName}
-                                onChange={(e) => setLastName(e.target.value)}
-                                size="small"
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                label="Correo electrónico"
-                                name="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                autoComplete="email"
-                                autoFocus
-                                size="small"
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                name="password"
-                                label="Contraseña"
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                autoComplete="current-password"
-                                size="small"
-                            />
-                        </Grid>
-                    </Grid>
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        sx={{ mt: 3, mb: 2 }}
+                    {error && (
+                        <Alert severity="error" sx={{ width: '100%', mt: 2 }}>
+                            {error}
+                        </Alert>
+                    )}
+                    {success && (
+                        <Alert severity="success" sx={{ width: '100%', mt: 2 }}>
+                            Usuario creado con éxito. Redirigiéndote a la página de inicio de sesión...
+                        </Alert>
+                    )}
+                    <Box
+                        component="form"
+                        noValidate
+                        sx={{ mt: 1 }}
+                        onSubmit={handleSubmit}
                     >
-                        Regístrate
-                    </Button>
-                    <Grid container justifyContent="flex-end">
-                        <Grid item>
-                            <Link href="/signIn" variant="body2">
-                                ¿Ya tienes una cuenta? Inicia sesión
-                            </Link>
+                        <Grid container spacing={1}>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    margin="normal"
+                                    name="name"
+                                    required
+                                    fullWidth
+                                    label="Nombre"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    autoFocus
+                                    size="small"
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    margin="normal"
+                                    required
+                                    fullWidth
+                                    label="Apellido"
+                                    name="lastName"
+                                    value={lastName}
+                                    onChange={(e) => setLastName(e.target.value)}
+                                    size="small"
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    margin="normal"
+                                    required
+                                    fullWidth
+                                    label="Correo electrónico"
+                                    name="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    autoComplete="email"
+                                    size="small"
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    margin="normal"
+                                    required
+                                    fullWidth
+                                    name="password"
+                                    label="Contraseña"
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    autoComplete="current-password"
+                                    size="small"
+                                />
+                            </Grid>
                         </Grid>
-                    </Grid>
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            sx={{ mt: 3, mb: 2 }}
+                        >
+                            Regístrate
+                        </Button>
+                        <Grid container justifyContent="flex-end">
+                            <Grid item>
+                                <Link href="/signIn" variant="body2">
+                                    ¿Ya tienes una cuenta? Inicia sesión
+                                </Link>
+                            </Grid>
+                        </Grid>
+                    </Box>
                 </Box>
             </Box>
         </div>

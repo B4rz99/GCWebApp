@@ -6,6 +6,7 @@ const { getTokenHeader } = require('../auth/getTokenHeader');
 const Relation = require('../models/relation');
 const Device = require('../models/device');
 const session = require('express-session');
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 
 
@@ -14,7 +15,7 @@ router.post('/signIn', async (req, res) => {
 
     if (!email || !password) {
         return res.status(400).json(jsonResponse(400, {
-            error: 'All fields are required'
+            error: 'Todos los campos son requeridos'
         }));
     }
 
@@ -22,13 +23,13 @@ router.post('/signIn', async (req, res) => {
 
     if (!login) {
         return res.status(400).json(jsonResponse(400, {
-            error: 'Wrong credentials'
+            error: 'Credenciales invalidas'
         }));
     } else {
         const isValidPassword = await login.isValidPassword(password);
         if (!isValidPassword) {
             return res.status(400).json(jsonResponse(400, {
-                error: 'User or password is incorrect'
+                error: 'Usuario o contraseña incorrectos'
             }));
         } else {
             const accessToken = login.createAccessToken();
@@ -49,34 +50,49 @@ router.post('/signIn', async (req, res) => {
 router.post('/signUp', async (req, res) => {
     const { name, lastName, email, password } = req.body;
 
+    // Check if all required fields are provided
     if (!name || !lastName || !email || !password) {
         return res.status(400).json(jsonResponse(400, {
-            error: 'All fields are required',
+            error: 'Todos los campos son requeridos',
+        }));
+    }
+
+    // Validate email format using the regular expression
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        return res.status(400).json(jsonResponse(400, {
+            error: 'El formato del correo electrónico es inválido.',
         }));
     }
 
     try {
         // Create a new instance of Login with the provided data
         const login = new Login();
+
+        // Check if the email already exists in the database
         const emailExists = await login.emailExists(email);
 
         if (emailExists) {
             return res.status(400).json(jsonResponse(400, {
-                error: 'Email already exists',
+                error: 'Ya existe un usuario con ese email',
             }));
         } else {
-            const login = new Login({ name, lastName, email, password });
-            // Use await to save the login instance to the database
-            await login.save();
-            
+            // Create a new Login instance with the provided data
+            const newLogin = new Login({ name, lastName, email, password });
+
+            // Save the newLogin instance to the database
+            await newLogin.save();
+
+            // Respond with a success message
             res.status(200).json(jsonResponse(200, {
-                message: 'User created successfully',
+                message: 'Usuario creado exitosamente',
             }));
-        }  
+        }
     } catch (error) {
-        
+        // Handle database errors
+        console.error(error);
         res.status(500).json(jsonResponse(500, {
-            error: 'Error saving user to the database',
+            error: 'Error al guardar el usuario en la base de datos',
         }));
     }
 });
@@ -166,6 +182,7 @@ router.post('/patient', async (req, res) => {
         }));
     }
 });
+
 
 router.post('/bracelet', async (req, res) => {
     const { deviceId } = req.body;

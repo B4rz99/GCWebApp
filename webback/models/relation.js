@@ -24,11 +24,13 @@ module.exports = Relation;
 
 Relation.prototype.emailExists = async function(emailP) {
     const result = await Relation.findOne({ where: { emailP } });
+	console.log('emailexiste');
     return !!result;
 };
 
 Relation.prototype.deviceExists = async function(deviceId) {
     const result = await Relation.findOne({ where: { deviceId } });
+	console.log('deviceexiste');
     return !!result;
 };
 
