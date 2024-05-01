@@ -29,10 +29,9 @@ function App() {
   return (
     <>
       <AuthProvider>
-        <DataProvider>
+      <DataProvider>
           <RouterProvider router={router}/>
-          <Popup />
-        </DataProvider>
+      </DataProvider>
       </AuthProvider>
     </>
   );

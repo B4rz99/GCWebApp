@@ -36,12 +36,12 @@ const theme = createTheme({
 });
 
 // Construction of Saturation component
-const SatVariable = ({ selectedDevice }) => {
+const SatVariable = ({ selectedDevice , index}) => {
   const { data } = useDataContext(); // Get data from the data context
 
   // Filter data by selectedDevice and extract oxygen
-  const saturationData = data.find(deviceData => deviceData.DeviceId === selectedDevice)?.data[0];
-  const saturation = saturationData ? `${saturationData.Oxygen}%` : '0%'; // Default to 0% if no saturation data
+  const selectedDeviceData = data.find(deviceData => deviceData.DeviceId === selectedDevice[index]);
+  const saturation = selectedDeviceData ? `${selectedDeviceData.Oxygen}%` : '0%'; // Default to 0% if no saturation data
 
   return (
     <Grid item xs={3} >

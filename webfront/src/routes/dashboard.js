@@ -26,9 +26,9 @@ function dashboard() {
         marginY={3}
         marginX={6}
       >
-        <CardVariable selectedDevice={selectedDevice}/>
-        <TempVariable selectedDevice={selectedDevice}/>
-        <SatVariable selectedDevice={selectedDevice}/>
+        <CardVariable selectedDevice={selectedDevice} index={0}/>
+        <TempVariable selectedDevice={selectedDevice} index={0}/>
+        <SatVariable selectedDevice={selectedDevice} index={0}/>
       </Box>
       <LocationDash onSelectorChange={handleSelectorChange} selectedDevice={selectedDevice} />
 

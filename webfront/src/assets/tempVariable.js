@@ -50,12 +50,12 @@ const theme = createTheme({
 });
 
 // Construction of Temperature component
-const TempVariable = ({ selectedDevice }) => {
+const TempVariable = ({ selectedDevice ,index}) => {
   const { data } = useDataContext(); // Get data from the data context
 
   // Filter data by selectedDevice and extract temperature
-  const temperatureData = data.find(deviceData => deviceData.DeviceId === selectedDevice)?.data[0];
-  const temperature = temperatureData ? `${temperatureData.Temperature}°C` : '0°C'; // Default to 0°C if no temperature data
+  const selectedDeviceData = data.find(deviceData => deviceData.DeviceId === selectedDevice[index]);
+  const temperature = selectedDeviceData ? `${selectedDeviceData.Temperature}°C` : '0°C'; // Default to 0°C if no temperature data
 
   return (
     <Grid item xs={3}>
