@@ -36,11 +36,11 @@ const theme = createTheme({
 });
 
 // Construction of Saturation component
-const SatVariable = ({ selectedDevice , index}) => {
+const SatVariable = ({ selectedDevice}) => {
   const { data } = useDataContext(); // Get data from the data context
 
   // Filter data by selectedDevice and extract oxygen
-  const selectedDeviceData = data.find(deviceData => deviceData.DeviceId === selectedDevice[index]);
+  const selectedDeviceData = data.find(deviceData => deviceData.DeviceId === selectedDevice);
   const saturation = selectedDeviceData ? `${selectedDeviceData.Oxygen}%` : '0%'; // Default to 0% if no saturation data
 
   return (

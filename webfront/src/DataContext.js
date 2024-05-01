@@ -8,9 +8,9 @@ export const useDataContext = () => useContext(DataContext);
 
 export const DataProvider = ({ children }) => {
   const [data, setData] = useState([]);
-  const [sos, setSos] = useState([]);
+  const [sosData, setSosData] = useState([]);
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchRealTimeData = async () => {
       try {
         const response = await axios.get(`${API_URL}/api/realTime`);
         setData(response.data);
@@ -19,9 +19,23 @@ export const DataProvider = ({ children }) => {
       }
     };
 
+    const fetchSosData = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/api/sos`);
+        setSosData(response.data);
+      } catch (error) {
+        console.error('Error fetching SOS data:', error);
+      }
+    };
+
     // Llamar a fetchData al montar el componente y luego cada 60 segundos (60000 milisegundos)
-    fetchData();
-    const intervalId = setInterval(fetchData, 5000); // Cambia el intervalo según sea necesario
+    fetchSosData();
+    fetchRealTimeData();
+
+    const intervalId = setInterval(() => {
+      fetchRealTimeData();
+      fetchSosData();
+    }, 2000); // Cambia el intervalo según sea necesario
 
     // Limpiar el intervalo al desmontar el componente para evitar fugas de memoria
     return () => clearInterval(intervalId);
@@ -29,7 +43,7 @@ export const DataProvider = ({ children }) => {
   },[]);
 
   return (
-    <DataContext.Provider value={{ data }}>
+    <DataContext.Provider value={{ data, sosData, setSosData}}>
       {children}
     </DataContext.Provider>
   );

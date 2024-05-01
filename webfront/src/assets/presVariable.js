@@ -5,6 +5,7 @@ import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { createTheme, ThemeProvider } from '@mui/material'
+import { useDataContext } from '../DataContext'; // Importa el contexto de datos
 
 //Theme-ing the Pressure variable
 const theme = createTheme({
@@ -37,6 +38,12 @@ const theme = createTheme({
 
 //Construction of Pressure component
 const presVariable = ({ selectedDevice}) => {
+  const { data } = useDataContext(); // Get data from the data context
+
+  // Filter data by selectedDevice and extract oxygen
+  const selectedDeviceData = data.find(deviceData => deviceData.DeviceId === selectedDevice);
+  const pressure = selectedDeviceData ?  selectedDeviceData.Sistolic ? `${selectedDeviceData.Sistolic}/${selectedDeviceData.Diastolic}`: '0/0' : '0/0'; // Default to 0% if no saturation data
+
   return (
     <Grid item xs={3} >
       <ThemeProvider theme={theme}>
@@ -54,10 +61,10 @@ const presVariable = ({ selectedDevice}) => {
               }}
           >
             <Typography component='h2' sx={{display:{xs:'flex', md:'none', lg:'flex'}}}>
-              120/80
+              {pressure}
             </Typography>
             <Typography component='h2' sx={{ fontSize:'54px', fontWeight:'500', display:{xs:'none', md:'flex', lg:'none'}}}>
-              120/80
+              {pressure}
             </Typography>
           </Box>
           <Grid container

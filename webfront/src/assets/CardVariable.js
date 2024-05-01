@@ -36,13 +36,12 @@ const theme = createTheme({
 });
 
 // Construction of Pulse component
-const CardVariable = ({ selectedDevice , index}) => {
-  console.log(selectedDevice);
+const CardVariable = ({ selectedDevice}) => {
   const { data } = useDataContext(); // Get data from the data context
 
   // Filter data by selectedDevice and extract heart rate
-  const selectedDeviceData = data.find(deviceData => deviceData.DeviceId === selectedDevice[index]);
-  console.log(selectedDeviceData);
+  
+  const selectedDeviceData = data.find(deviceData => deviceData.DeviceId === selectedDevice);
   const heartRate = selectedDeviceData ? `${selectedDeviceData.HeartRate} lpm` : '0 lpm'; // Default to 0 lpm if no heart rate data
 
   return (

@@ -10,7 +10,7 @@ const Pressure = require('../models/pressure');
 const Oxygen = require('../models/oxygen');
 const Position = require('../models/position');
 const Temperature = require('../models/temperature');
-
+const Alarm = require('../models/alarm');
 Device.hasMany(Position, { foreignKey: 'DeviceId' });
 Device.hasMany(HeartRate, { foreignKey: 'DeviceId' });
 Device.hasMany(Temperature, { foreignKey: 'DeviceId' });
@@ -157,6 +157,15 @@ router.get('/realTime', async (req, res) => {
         where: sequelize.literal('("DeviceId", "TimeStamp") IN (SELECT "DeviceId", MAX("TimeStamp") FROM "Temperature" GROUP BY "DeviceId")')
       });
       
+      const pressures = await Pressure.findAll({
+        attributes: ['DeviceId', 'TimeStamp', 'Sistolic','Diastolic'],
+        where: sequelize.literal('("DeviceId", "TimeStamp") IN (SELECT "DeviceId", MAX("TimeStamp") FROM "Pressure" GROUP BY "DeviceId")') 
+      });
+    
+      const positions = await Position.findAll({
+        attributes: ['DeviceId', 'TimeStamp', 'Latitude', 'Longitude'],
+        where: sequelize.literal('("DeviceId", "TimeStamp") IN (SELECT "DeviceId", MAX("TimeStamp") FROM "Position" GROUP BY "DeviceId")') 
+      });
       // Combine los resultados en un solo objeto usando DeviceId como clave
       const combinedData = {};
       heartRates.forEach(heartRate => {
@@ -174,8 +183,7 @@ router.get('/realTime', async (req, res) => {
           combinedData[deviceId] = { DeviceId: deviceId };
         }
         combinedData[deviceId].Oxygen = oxygen.Oxygen;
-        combinedData[deviceId].TimeStampOxygen = oxygen.TimeStamp;
-      });
+        });
       
       temperatures.forEach(temperature => {
         const deviceId = temperature.DeviceId;
@@ -183,13 +191,28 @@ router.get('/realTime', async (req, res) => {
           combinedData[deviceId] = { DeviceId: deviceId };
         }
         combinedData[deviceId].Temperature = temperature.Temperature;
-        combinedData[deviceId].TimeStampTemperature = temperature.TimeStamp;
-      });
+        });
       
+      pressures.forEach(pressure => {
+        const deviceId = pressure.DeviceId;
+        if (!combinedData[deviceId]){
+            combinedData[deviceId] = { DeviceId: deviceId };
+        }
+        combinedData[deviceId].Sistolic = pressure.Sistolic;
+        combinedData[deviceId].Diastolic = pressure.Diastolic;
+      })
+    
+      positions.forEach(position => {
+        const deviceId = position.DeviceId;
+        if (!combinedData[deviceId]){
+            combinedData[deviceId] = { DeviceId: deviceId};
+        }
+        combinedData[deviceId].Latitude = position.Latitude;
+        combinedData[deviceId].Longitude = position.Longitude;
+      })
       // Convertir el objeto combinado en un array de objetos
       const data = Object.values(combinedData);
       
-      console.log(data);
       
   
       res.json(data);
@@ -390,6 +413,26 @@ router.get('/atypicalPressure', async (req, res) => {
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
+router.get('/sos', async (req, res) => {
+    try {
+        // Encontrar el último registro de cada DeviceId donde Enabled es false
+        const latestAlarms = await Alarm.findAll({
+            attributes: ['DeviceId', 'TimeStamp'],
+            where: sequelize.literal('("DeviceId", "TimeStamp") IN (SELECT "DeviceId", MAX("TimeStamp") FROM "Alarm" WHERE "Enabled"=false GROUP BY "DeviceId")') 
+        });
+
+        // Actualizar todos los registros a Enabled true
+        await Alarm.update({ Enabled: true }, { where: { Enabled: false } });
+
+        // Devolver los últimos registros encontrados
+        res.json(latestAlarms);
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
