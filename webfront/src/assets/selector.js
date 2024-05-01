@@ -4,58 +4,96 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import axios from 'axios'; // Importar Axios
+import Checkbox from '@mui/material/Checkbox';
+import ListItemText from '@mui/material/ListItemText';
+import axios from 'axios';
 import { API_URL } from '../auth/constants';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 export default function BasicSelect({ onSelectorChange }) {
-  const [devices, setDevices] = useState([]); // Estado para almacenar los datos de los dispositivos
-  const [selectedDeviceId, setSelectedDeviceId] = useState(null); // Estado para almacenar el ID del dispositivo seleccionado
+  const [devices, setDevices] = useState([]); // State to store devices data
+  const [selectedDeviceIds, setSelectedDeviceIds] = useState([]); // State to store selected device IDs
+  const [openSnackbar, setOpenSnackbar] = useState(false); // State for showing snackbar
 
   useEffect(() => {
-    // Función para obtener los datos de los dispositivos
+    // Function to fetch devices data
     async function fetchDevices() {
       try {
         const response = await axios.get(`${API_URL}/api/allDevices`);
         if (response.status === 200) {
-          // Almacenar los datos de los dispositivos en el estado
-          setDevices(response.data);
+          // Store devices data in state
+          const devicesData = response.data;
+          setDevices(devicesData);
+
+          // Set all device IDs as initially selected
+          const allDeviceIds = devicesData.map(device => device.DeviceId);
+          setSelectedDeviceIds(allDeviceIds);
+
+          // Call onSelectorChange function with all device IDs
+          onSelectorChange(allDeviceIds);
         } else {
-          console.error('Error al obtener los datos de dispositivos:', response.statusText);
+          console.error('Error fetching devices data:', response.statusText);
         }
       } catch (error) {
-        console.error('Error al realizar la solicitud:', error.message);
+        console.error('Error during the request:', error.message);
       }
     }
 
-    // Llamar a la función para obtener los datos de los dispositivos cuando el componente se monta
+    // Fetch devices data when the component mounts
     fetchDevices();
-  }, []); // El segundo argumento [] asegura que useEffect se ejecute solo una vez
+  }, []);
 
   const handleChange = (event) => {
-    const selectedDeviceId = event.target.value;
-    setSelectedDeviceId(selectedDeviceId);
-    // Llamar a la función onSelectorChange con el ID del dispositivo seleccionado
-    onSelectorChange(selectedDeviceId);
+    const selectedValues = event.target.value;
+
+    // If no options are selected, display a warning and return early
+    if (selectedValues.length === 0) {
+      setOpenSnackbar(true);
+      return;
+    }
+
+    // Update selected device IDs state
+    setSelectedDeviceIds(selectedValues);
+    
+    // Call onSelectorChange function with selected device IDs
+    onSelectorChange(selectedValues);
+  };
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
   };
 
   return (
     <Box sx={{ minWidth: 200 }}>
-      <FormControl sx={{ m:1, width: 200}}>
-        <InputLabel id="simple-select">Paciente</InputLabel>
+      <FormControl sx={{ m: 1, width: 200 }}>
+        <InputLabel id="multi-select-label">Pacientes</InputLabel>
         <Select
-          labelId="simple-select"
-          id="simple-select-1"
-          value={selectedDeviceId || ''} // Usar una cadena vacía si selectedDeviceId es null
-          label="Device"
+          labelId="multi-select-label"
+          id="multi-select"
+          multiple
+          value={selectedDeviceIds}
           onChange={handleChange}
+          renderValue={(selected) => selected.join(', ')}
         >
-          {devices.map(device => (
+          {devices.map((device) => (
             <MenuItem key={device.DeviceId} value={device.DeviceId}>
-              {device.Name}
+              <Checkbox checked={selectedDeviceIds.includes(device.DeviceId)} />
+              <ListItemText primary={device.Name} />
             </MenuItem>
           ))}
         </Select>
       </FormControl>
+      {/* Snackbar for warning */}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity="warning" sx={{ width: '100%' }}>
+          Mínimo debe haber un paciente debe ser seleccionado.
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

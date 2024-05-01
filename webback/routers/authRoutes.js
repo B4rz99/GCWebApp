@@ -157,9 +157,9 @@ router.post('/patient', async (req, res) => {
             }));
 
         } else {
+            console.log(email)
             const relation = new Relation({ deviceId, emailD: email, emailP });
             await relation.save();
-
             const login = new Login({ name, lastName, email: emailP, password });
             await login.save();
             

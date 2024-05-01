@@ -9,6 +9,7 @@ import { API_URL } from '../auth/constants';
 import TableHistorics from './tableHistorics';
 import Calendar from './calendar';
 import Selector from './selector';
+import SelectorHisto from './selectorHisto';
 
 export default function LocationDash({ onDateChange, onSelectorChange, startTime, endTime, selectedDevice }) {
     const [mapData, setMapData] = useState([]);
@@ -82,7 +83,7 @@ export default function LocationDash({ onDateChange, onSelectorChange, startTime
                 </MapContainer>
                 <TableHistorics startTime={startTime} endTime={endTime} selectedDevice={selectedDevice} />
                 <Calendar onDateChange={onDateChange} />
-                <Selector onSelectorChange={onSelectorChange} />
+                <SelectorHisto onSelectorChange={onSelectorChange} />
             </Box>
         </div>
     );
