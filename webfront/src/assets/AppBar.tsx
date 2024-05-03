@@ -98,19 +98,6 @@ function ResponsiveAppBar() {
                         </Typography>
                     </Link>
 
-                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-                        <Button
-                            size="large"
-                            aria-label="account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            onClick={handleOpenNavMenu}
-                            color="inherit"
-                        >
-                            Menu
-                        </Button>
-                    </Box>
-
                     <Link to="/Dashboard" style={{ textDecoration: 'none' }}>
                     <Typography
                           variant="h5"
