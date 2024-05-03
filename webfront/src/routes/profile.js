@@ -115,13 +115,12 @@ export default function MyProfile() {
                                 >
                                     <Input size="sm" type="email" value={emailP} onChange={(e) => setEmailP(e.target.value)} />
                                 </FormControl>
-                                <FormLabel>Contraseña</FormLabel>
+                                <FormLabel>ID</FormLabel>
                                 <FormControl
                                     sx={{ display: { sm: 'flex-column', md: 'flex-row' }, gap: 2 }}
                                 >
                                     <Input size="sm" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                                 </FormControl>
-                                <FormLabel>ID</FormLabel>
                                 <FormControl
                                     sx={{ display: { sm: 'flex-column', md: 'flex-row' }, gap: 2 }}
                                 >

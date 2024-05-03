@@ -25,17 +25,36 @@ Oxygen.belongsTo(Device, { foreignKey: 'DeviceId' });
 router.get('/oxygen', async (req, res) => {
     try {
         const { deviceId, startDate, endDate } = req.query;
+
+        // Validate deviceId
         if (!deviceId) {
             return res.status(400).json({ error: 'Device ID Required.' });
         }
+
+        // Create filter options for Oxygen data based on the request parameters
         let filterOptions = { DeviceId: deviceId };
         if (startDate && endDate) {
             filterOptions.TimeStamp = {
                 [Op.between]: [new Date(startDate), new Date(endDate)],
             };
         }
+
+        // Fetch oxygen data based on the filter options
         const oxygenData = await Oxygen.findAll({ where: filterOptions });
-        res.json(oxygenData);
+
+        // Fetch the device details to obtain the device name
+        const device = await Device.findOne({ where: { DeviceId: deviceId } });
+
+        // Check if the device exists
+        if (!device) {
+            return res.status(404).json({ error: 'Device not found.' });
+        }
+
+        // Include the device name in the response
+        const deviceName = device.Name;
+
+        // Send the response with oxygen data and the device name
+        res.json({ oxygenData, deviceName });
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -45,19 +64,37 @@ router.get('/oxygen', async (req, res) => {
 router.get('/heartRate', async (req, res) => {
     try {
         const { deviceId, startDate, endDate } = req.query;
+
+        // Validate deviceId
         if (!deviceId) {
             return res.status(400).json({ error: 'Device ID Required.' });
         }
+
+        // Create filter options for HeartRate data based on the request parameters
         let filterOptions = { DeviceId: deviceId };
         if (startDate && endDate) {
             filterOptions.TimeStamp = {
                 [Op.between]: [new Date(startDate), new Date(endDate)],
             };
         }
-        const heartRateData = await HeartRate.findAll({ where: filterOptions });
-        res.json(heartRateData);
-    } catch (error) {
 
+        // Fetch heart rate data based on the filter options
+        const heartRateData = await HeartRate.findAll({ where: filterOptions });
+
+        // Fetch the device details to obtain the device name
+        const device = await Device.findOne({ where: { DeviceId: deviceId } });
+
+        // Check if the device exists
+        if (!device) {
+            return res.status(404).json({ error: 'Device not found.' });
+        }
+
+        // Include the device name in the response
+        const deviceName = device.Name;
+
+        // Send the response with heart rate data and the device name
+        res.json({ heartRateData, deviceName });
+    } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
@@ -66,17 +103,36 @@ router.get('/heartRate', async (req, res) => {
 router.get('/temperature', async (req, res) => {
     try {
         const { deviceId, startDate, endDate } = req.query;
+
+        // Validate deviceId
         if (!deviceId) {
             return res.status(400).json({ error: 'Device ID Required.' });
         }
+
+        // Create filter options for Temperature data based on the request parameters
         let filterOptions = { DeviceId: deviceId };
         if (startDate && endDate) {
             filterOptions.TimeStamp = {
                 [Op.between]: [new Date(startDate), new Date(endDate)],
             };
         }
+
+        // Fetch temperature data based on the filter options
         const temperatureData = await Temperature.findAll({ where: filterOptions });
-        res.json(temperatureData);
+
+        // Fetch the device details to obtain the device name
+        const device = await Device.findOne({ where: { DeviceId: deviceId } });
+
+        // Check if the device exists
+        if (!device) {
+            return res.status(404).json({ error: 'Device not found.' });
+        }
+
+        // Include the device name in the response
+        const deviceName = device.Name;
+
+        // Send the response with temperature data and the device name
+        res.json({ temperatureData, deviceName });
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -86,17 +142,36 @@ router.get('/temperature', async (req, res) => {
 router.get('/pressure', async (req, res) => {
     try {
         const { deviceId, startDate, endDate } = req.query;
+
+        // Validate deviceId
         if (!deviceId) {
             return res.status(400).json({ error: 'Device ID Required.' });
         }
+
+        // Create filter options for Pressure data based on the request parameters
         let filterOptions = { DeviceId: deviceId };
         if (startDate && endDate) {
             filterOptions.TimeStamp = {
                 [Op.between]: [new Date(startDate), new Date(endDate)],
             };
         }
+
+        // Fetch pressure data based on the filter options
         const pressureData = await Pressure.findAll({ where: filterOptions });
-        res.json(pressureData);
+
+        // Fetch the device details to obtain the device name
+        const device = await Device.findOne({ where: { DeviceId: deviceId } });
+
+        // Check if the device exists
+        if (!device) {
+            return res.status(404).json({ error: 'Device not found.' });
+        }
+
+        // Include the device name in the response
+        const deviceName = device.Name;
+
+        // Format the response with pressure data and the device name
+        res.json({ pressureData, deviceName });
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -260,7 +335,7 @@ router.get('/unavailableDevices', async (req, res) => {
 router.get('/atypicalOxygen', async (req, res) => {
     try {
         const { deviceId, startDate, endDate } = req.query;
-        
+
         // Check if deviceId is provided
         if (!deviceId) {
             return res.status(400).json({ error: 'Device ID Required.' });
@@ -283,8 +358,20 @@ router.get('/atypicalOxygen', async (req, res) => {
 
         // Query the database with the specified filter options
         const oxygenData = await Oxygen.findAll({ where: filterOptions });
-        // Respond with the retrieved data
-        res.json(oxygenData);
+
+        // Fetch the device details from the Device table to obtain the device name
+        const device = await Device.findOne({ where: { DeviceId: deviceId } });
+
+        // Check if the device was found
+        if (!device) {
+            return res.status(404).json({ error: 'Device not found.' });
+        }
+
+        // Retrieve the device name
+        const deviceName = device.Name;
+
+        // Respond with the oxygen data and the device name
+        res.json({ oxygenData, deviceName });
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -294,7 +381,7 @@ router.get('/atypicalOxygen', async (req, res) => {
 router.get('/atypicalHeartRate', async (req, res) => {
     try {
         const { deviceId, startDate, endDate } = req.query;
-        
+
         // Check if deviceId is provided
         if (!deviceId) {
             return res.status(400).json({ error: 'Device ID Required.' });
@@ -321,8 +408,19 @@ router.get('/atypicalHeartRate', async (req, res) => {
         // Query the database with the specified filter options
         const heartRateData = await HeartRate.findAll({ where: filterOptions });
 
-        // Respond with the retrieved data
-        res.json(heartRateData);
+        // Fetch the device details from the Device table to obtain the device name
+        const device = await Device.findOne({ where: { DeviceId: deviceId } });
+
+        // Check if the device was found
+        if (!device) {
+            return res.status(404).json({ error: 'Device not found.' });
+        }
+
+        // Retrieve the device name
+        const deviceName = device.Name;
+
+        // Respond with the heart rate data and the device name
+        res.json({ heartRateData, deviceName });
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -332,7 +430,7 @@ router.get('/atypicalHeartRate', async (req, res) => {
 router.get('/atypicalTemperature', async (req, res) => {
     try {
         const { deviceId, startDate, endDate } = req.query;
-        
+
         // Check if deviceId is provided
         if (!deviceId) {
             return res.status(400).json({ error: 'Device ID Required.' });
@@ -359,8 +457,19 @@ router.get('/atypicalTemperature', async (req, res) => {
         // Query the database with the specified filter options
         const temperatureData = await Temperature.findAll({ where: filterOptions });
 
-        // Respond with the retrieved data
-        res.json(temperatureData);
+        // Fetch the device details from the Device table to obtain the device name
+        const device = await Device.findOne({ where: { DeviceId: deviceId } });
+
+        // Check if the device was found
+        if (!device) {
+            return res.status(404).json({ error: 'Device not found.' });
+        }
+
+        // Retrieve the device name
+        const deviceName = device.Name;
+
+        // Respond with the temperature data and the device name
+        res.json({ temperatureData, deviceName });
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ error: 'Internal server error' });
@@ -408,8 +517,19 @@ router.get('/atypicalPressure', async (req, res) => {
         // Query the database with the specified filter options
         const pressureData = await Pressure.findAll({ where: filterOptions });
 
-        // Respond with the retrieved data
-        res.json(pressureData);
+        // Fetch the device details from the Device table to obtain the device name
+        const device = await Device.findOne({ where: { DeviceId: deviceId } });
+
+        // Check if the device was found
+        if (!device) {
+            return res.status(404).json({ error: 'Device not found.' });
+        }
+
+        // Retrieve the device name
+        const deviceName = device.Name;
+
+        // Respond with the pressure data and the device name
+        res.json({ pressureData, deviceName });
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ error: 'Internal server error' });

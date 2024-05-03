@@ -61,7 +61,7 @@ export default function LocationDash({ onSelectorChange, selectedDevice }) {
     <div>
       <Box
         display='flex'
-        justifyContent='space-around'
+        justifyContent='center'
         marginY={6}
         marginX={6}
         gap={2}

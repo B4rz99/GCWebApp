@@ -13,7 +13,7 @@ export default function historics() {
 
   const [startTime, setStartTime] = React.useState(null);
   const [endTime, setEndTime] = React.useState(null);
-  const [selectedDevice, setSelectedDevice] = React.useState('');
+  const [selectedDevice, setSelectedDevice] = React.useState([]);
   const handleDateChange = (startDate, endDate) => {
     
     setStartTime(startDate);
@@ -35,6 +35,7 @@ export default function historics() {
         <PulseHistoVariable startTime={startTime} endTime={endTime} selectedDevice={selectedDevice}/>
         <TempHistoVariable startTime={startTime} endTime={endTime} selectedDevice={selectedDevice}/>
         <SatHistoVariable startTime={startTime} endTime={endTime} selectedDevice={selectedDevice}/>
+        <PresHistoVariable startTime={startTime} endTime={endTime} selectedDevice={selectedDevice}/>
     
     </Box>
     <Location
