@@ -237,7 +237,7 @@ export default function PressureHistoVariable({ startTime, endTime, selectedDevi
 
     return (
         <ThemeProvider theme={theme}>
-            <Box height={250} width={400}>
+            <Box>
                 <Paper elevation={4}>
                     <Typography component='h1' sx={{ mx: 4 }}>
                         Presión Arterial

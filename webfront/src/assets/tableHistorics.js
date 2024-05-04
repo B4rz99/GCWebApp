@@ -194,7 +194,7 @@ export default function StickyHeadTable({ startTime, endTime, selectedDevice }) 
 
     // Render the table and UI components
     return (
-        <Paper sx={{ width: '50%', overflow: 'hidden' }}>
+        <Paper sx={{ width: '100%', overflow: 'hidden' }}>
             <Typography variant="h6" gutterBottom sx={{ padding: '5px 20px' }}>
                 Datos Atípicos
             </Typography>

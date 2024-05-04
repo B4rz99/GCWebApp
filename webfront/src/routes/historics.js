@@ -1,6 +1,7 @@
-import React from 'react'
-import Box from '@mui/material/Box';
+import React from 'react';
 import 'leaflet/dist/leaflet.css';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
 import AppBar from '../assets/AppBar.tsx';
 import Location from '../assets/location';
 import PulseHistoVariable from '../assets/pulseHistoVariable';
@@ -9,42 +10,51 @@ import SatHistoVariable from '../assets/satHistoVariable';
 import TableHistorics from '../assets/tableHistorics';
 import PresHistoVariable from '../assets/presHistoVariable';
 
-export default function historics() {
+// Historics view rendering
+export default function Historics() {
+    const [startTime, setStartTime] = React.useState(null);
+    const [endTime, setEndTime] = React.useState(null);
+    const [selectedDevice, setSelectedDevice] = React.useState([]);
 
-  const [startTime, setStartTime] = React.useState(null);
-  const [endTime, setEndTime] = React.useState(null);
-  const [selectedDevice, setSelectedDevice] = React.useState([]);
-  const handleDateChange = (startDate, endDate) => {
-    
-    setStartTime(startDate);
-    setEndTime(endDate);
-  };
+    const handleDateChange = (startDate, endDate) => {
+        setStartTime(startDate);
+        setEndTime(endDate);
+    };
 
-  const handleSelectorChange = (selector) => {
-    setSelectedDevice(selector); // Establecer el valor seleccionado del selector
-  };
-  return (
-    <div>
-      <AppBar/>
-    <Box
-        display='flex'
-        justifyContent='center'
-        marginY={3}
-        gap={4}
-      >
-        <PulseHistoVariable startTime={startTime} endTime={endTime} selectedDevice={selectedDevice}/>
-        <TempHistoVariable startTime={startTime} endTime={endTime} selectedDevice={selectedDevice}/>
-        <SatHistoVariable startTime={startTime} endTime={endTime} selectedDevice={selectedDevice}/>
-        <PresHistoVariable startTime={startTime} endTime={endTime} selectedDevice={selectedDevice}/>
-    
-    </Box>
-    <Location
-        onDateChange={handleDateChange}
-        onSelectorChange={handleSelectorChange}
-        startTime={startTime}
-        endTime={endTime}
-        selectedDevice={selectedDevice}
-      />
-    </div>
-  )
+    const handleSelectorChange = (selector) => {
+        setSelectedDevice(selector);
+    };
+
+    return (
+        <div>
+            <AppBar />
+            <Box  marginleft={23}>
+            {/* Wrap content in a Grid container */}
+            <Grid container spacing={2} justifyContent="center" marginY={1}>
+                <Grid item xs={12} sm={6} md={3} lg={3}>
+                    <PulseHistoVariable startTime={startTime} endTime={endTime} selectedDevice={selectedDevice} />
+                </Grid>
+                <Grid item xs={12} sm={6} md={3} lg={3}>
+                    <TempHistoVariable startTime={startTime} endTime={endTime} selectedDevice={selectedDevice} />
+                </Grid>
+                <Grid item xs={12} sm={6} md={3} lg={3}>
+                    <SatHistoVariable startTime={startTime} endTime={endTime} selectedDevice={selectedDevice} />
+                </Grid>
+                <Grid item xs={12} sm={6} md={3} lg={3}>
+                    <PresHistoVariable startTime={startTime} endTime={endTime} selectedDevice={selectedDevice} />
+                </Grid>
+            </Grid>
+            {/* Wrap the Location component in a Grid item */}
+            <Grid item xs={12}>
+                <Location
+                    onDateChange={handleDateChange}
+                    onSelectorChange={handleSelectorChange}
+                    startTime={startTime}
+                    endTime={endTime}
+                    selectedDevice={selectedDevice}
+                />
+            </Grid>
+            </Box>
+        </div>
+    );
 }

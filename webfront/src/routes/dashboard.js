@@ -29,7 +29,8 @@ function Dashboard() {
             spacing={2}
             justifyContent="center"
             alignItems="center"
-            style={{ marginBottom: '16px' }} // Add space below each grid container
+            spacing={2}
+            style={{ marginBottom: '16px', marginTop:'2px' }} // Add space below each grid container
           >
             <Grid item xs={12} sm={6} md={3} lg={3}>
               <CardVariable selectedDevice={device} />

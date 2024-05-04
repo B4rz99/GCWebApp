@@ -241,7 +241,7 @@ export default function SatHistoVariable({ startTime, endTime, selectedDevice })
 
     return (
         <ThemeProvider theme={theme}>
-            <Box height={250} width={400}>
+            <Box>
                 <Paper elevation={4}>
                     <Typography component="h1" sx={{ mx: 4 }}>
                         SpO2

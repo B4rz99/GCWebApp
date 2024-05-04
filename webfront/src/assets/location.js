@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import 'leaflet/dist/leaflet.css';
-import { MapContainer, TileLayer, Marker, Polyline, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Polyline, useMap } from 'react-leaflet';
+import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import markerIconPng from "leaflet/dist/images/marker-icon.png";
-import { Icon } from 'leaflet';
 import axios from 'axios';
 import { API_URL } from '../auth/constants';
 import TableHistorics from './tableHistorics';
@@ -16,16 +15,7 @@ export default function LocationDash({ onDateChange, onSelectorChange, startTime
     const [deviceColors, setDeviceColors] = useState({});
 
     // Define a color palette to use for each device
-    const colors = [
-        'red',
-        'blue',
-        'green',
-        'purple',
-        'orange',
-        'yellow',
-        'cyan',
-        'magenta',
-    ];
+    const colors = ['red', 'blue', 'green', 'purple', 'orange', 'yellow', 'cyan', 'magenta'];
 
     // Function to set colors for each device in the `selectedDevice` array
     const assignColorsToDevices = () => {
@@ -108,35 +98,44 @@ export default function LocationDash({ onDateChange, onSelectorChange, startTime
 
     return (
         <div>
-            <Box
-                display='flex'
-                justifyContent='space-around'
-                marginY={6}
-                marginX={6}
-                gap={2}
-            >
-                <MapContainer style={{ height: "500px", width: '50%' }} center={[10.96854, -74.78132]} zoom={13}>
-                    <TileLayer
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    />
-                    
-                    {/* Iterate through the mapData and draw Polyline for each device */}
-                    {Object.entries(groupedPositions).map(([deviceId, positions]) => (
-                        <Polyline
-                            key={deviceId}
-                            positions={positions}
-                            color={deviceColors[deviceId]} // Use the assigned color for the device
-                            interactive={false}
+            <Grid container spacing={3} justifyContent="center" marginY={6}>
+                {/* Map container */}
+                <Grid item xs={12} lg={6}>
+                    <MapContainer style={{ height: "500px", width: '100%' }} center={[10.96854, -74.78132]} zoom={13}>
+                        <TileLayer
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                         />
-                    ))}
 
-                    <SetMapBounds />
-                </MapContainer>
-                <TableHistorics startTime={startTime} endTime={endTime} selectedDevice={selectedDevice} />
-                <Calendar onDateChange={onDateChange} />
-                <Selector onSelectorChange={onSelectorChange} />
-            </Box>
+                        {/* Iterate through the mapData and draw Polyline for each device */}
+                        {Object.entries(groupedPositions).map(([deviceId, positions]) => (
+                            <Polyline
+                                key={deviceId}
+                                positions={positions}
+                                color={deviceColors[deviceId]} // Use the assigned color for the device
+                                interactive={false}
+                            />
+                        ))}
+
+                        <SetMapBounds />
+                    </MapContainer>
+                </Grid>
+
+                {/* TableHistorics component */}
+                <Grid item xs={12} lg={3}>
+                    <TableHistorics startTime={startTime} endTime={endTime} selectedDevice={selectedDevice} />
+                </Grid>
+
+                {/* Calendar component */}
+                <Grid item xs={6} lg={1.5}>
+                    <Calendar onDateChange={onDateChange} />
+                </Grid>
+
+                {/* Selector component */}
+                <Grid item xs={6} lg={1.5}>
+                    <Selector onSelectorChange={onSelectorChange} />
+                </Grid>
+            </Grid>
         </div>
     );
 }
