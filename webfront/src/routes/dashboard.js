@@ -21,7 +21,7 @@ function Dashboard() {
   return (
     <div className="App">
       <AppBar />
-      <Box marginLeft={23}> {/* Adjust marginLeft as needed */}
+      <Box marginLeft={15}> {/* Adjust marginLeft as needed */}
         {selectedDevice.map((device, index) => (
           <Grid
             key={index}

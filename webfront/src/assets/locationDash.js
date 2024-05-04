@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, Polyline } from 'react-leaflet';
-import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
 import { useDataContext } from '../DataContext';
 import Selector from './selector';
 
@@ -40,41 +40,38 @@ export default function LocationDash({ onSelectorChange, selectedDevice }) {
       setDevicePositions(newDevicePositions); // Actualizar el estado con las nuevas posiciones
     }
   }, [data, selectedDevice]);
-  
+
   // Renderizar las polilíneas para cada dispositivo seleccionado
   const renderPolylines = () => {
     const polylines = [];
     for (const deviceId in devicePositions) {
       const positions = devicePositions[deviceId];
-      
-      const polyline = positions
-      console.log(polyline);
+
+      const polyline = positions;
       polylines.push(
         <Polyline key={deviceId} positions={polyline} />
       );
     }
     return polylines;
   };
-  
-  
+
   return (
-    <div>
-      <Box
-        display='flex'
-        justifyContent='center'
-        marginY={6}
-        marginX={6}
-        gap={2}
-      >
-        <MapContainer style={{ height: "500px", width: '50%' }} center={[10.96854, -74.78132]} zoom={13} scrollWheelZoom={true}>
+    <Grid container spacing={3} justifyContent="center">
+      {/* Map container */}
+      <Grid item xs={12} lg={6}>
+        <MapContainer style={{ height: "500px", width: '80%' }} center={[10.96854, -74.78132]} zoom={13} scrollWheelZoom={true}>
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
           {renderPolylines()}
         </MapContainer>
+      </Grid>
+
+      {/* Selector component */}
+      <Grid item xs={12} lg={4}>
         <Selector onSelectorChange={onSelectorChange} />
-      </Box>
-    </div>
+      </Grid>
+    </Grid>
   );
 }

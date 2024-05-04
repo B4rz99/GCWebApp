@@ -98,10 +98,10 @@ export default function LocationDash({ onDateChange, onSelectorChange, startTime
 
     return (
         <div>
-            <Grid container spacing={3} justifyContent="center" marginY={6}>
+            <Grid container spacing={3} justifyContent="center" marginY={2}>
                 {/* Map container */}
                 <Grid item xs={12} lg={6}>
-                    <MapContainer style={{ height: "500px", width: '100%' }} center={[10.96854, -74.78132]} zoom={13}>
+                    <MapContainer style={{ height: "500px", width: '100%' }} center={[10.96854, -74.78132]} zoom={13} scrollWheelZoom={true}>
                         <TileLayer
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

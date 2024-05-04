@@ -47,7 +47,7 @@ const presVariable = ({ selectedDevice}) => {
   return (
     <Grid item xs={3} >
       <ThemeProvider theme={theme}>
-        <Paper elevation={4} sx={{width: {xs: 250, md:200, lg: 250}}}>
+        <Paper elevation={4} sx={{width: {xs: 280, md:200, lg: 250}}}>
           <Box paddingX={3}>
             <Typography component='h1'>
               Tensión Arterial

@@ -240,7 +240,7 @@ export default function PressureHistoVariable({ startTime, endTime, selectedDevi
             <Box>
                 <Paper elevation={4}>
                     <Typography component='h1' sx={{ mx: 4 }}>
-                        Presión Arterial
+                        Tensión Arterial
                     </Typography>
                     <Line data={chartData} options={options} width={400} height={250} />
                 </Paper>

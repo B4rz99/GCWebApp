@@ -33,20 +33,6 @@ const theme = createTheme({
       ],
     },
   },
-  MuiPaper: {
-    default: {
-      elevation: 4,
-    },
-    overrides: {
-      root: {
-        width: {
-          xs: 250,
-          md: 200,
-          lg: 250,
-        },
-      },
-    },
-  },
 });
 
 // Construction of Temperature component
@@ -60,7 +46,7 @@ const TempVariable = ({ selectedDevice}) => {
   return (
     <Grid item xs={3}>
       <ThemeProvider theme={theme}>
-        <Paper elevation={4} sx={{ width: { xs: 250, md: 200, lg: 250 } }}>
+        <Paper elevation={4} sx={{ width: { xs: 280, md: 200, lg: 250 } }}>
           <Box paddingX={3}>
             <Typography component='h1'>
               Temperatura
