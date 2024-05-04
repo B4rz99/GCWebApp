@@ -59,7 +59,7 @@ export default function LocationDash({ onSelectorChange, selectedDevice }) {
     <Grid container spacing={3} justifyContent="center">
       {/* Map container */}
       <Grid item xs={12} lg={6}>
-        <MapContainer style={{ height: "500px", width: '80%' }} center={[10.96854, -74.78132]} zoom={13} scrollWheelZoom={true}>
+        <MapContainer style={{ height: "500px", width: '100%' }} center={[10.96854, -74.78132]} zoom={13} scrollWheelZoom={true}>
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

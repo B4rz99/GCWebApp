@@ -119,7 +119,7 @@ function ResponsiveAppBar() {
                     </Link>
 
                     {/* Conditionally render buttons based on filteredPages */}
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'flex' } }}>
                         {filteredPages.map((page) => (
                             <Button
                                 key={page}
