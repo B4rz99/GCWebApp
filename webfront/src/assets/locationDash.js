@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, Polyline } from 'react-leaflet';
-import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
 import { useDataContext } from '../DataContext';
 import Selector from './selector';
+
+// Define los colores para los dispositivos
 
 export default function LocationDash({ onSelectorChange, selectedDevice }) {
   const { data } = useDataContext(); // Contexto de datos
@@ -11,67 +13,75 @@ export default function LocationDash({ onSelectorChange, selectedDevice }) {
   const [devicePositions, setDevicePositions] = useState({}); // Estado local para almacenar las posiciones de cada dispositivo
   const prevDevicePositions = useRef({}); // Estado ref para almacenar las posiciones anteriores de cada dispositivo
 
+
+  // Define a color palette to use for each device
+  const deviceColors = {
+    '1234567890': 'red',    // Asignamos 'red' al ID '1234567890'
+    '1342765980': 'blue',   // Asignamos 'blue' al ID '1342765980'
+    // Si hay más IDs conocidos, puedes asignarles colores aquí
+  };
+  const defaultColor = 'gray';
+
+  function getColorForDevice(deviceId) {
+    return deviceColors[deviceId] || defaultColor;
+  }
+
   useEffect(() => {
-    // Actualizar las posiciones cuando se reciban nuevos datos del contexto de datos
     if (data && data.length > 0) {
-      const newDevicePositions = { ...devicePositions }; // Copiar el estado actual de las posiciones
+      const newDevicePositions = {...devicePositions };
 
       data.forEach(deviceData => {
         const deviceId = deviceData.DeviceId;
         if (selectedDevice.includes(deviceId)) {
-          // Si el dispositivo está seleccionado
           if (deviceData.Latitude && deviceData.Longitude) {
-            // Verificar si las nuevas posiciones son diferentes a las anteriores
+            const latitude = parseFloat(deviceData.Latitude);
+            const longitude = parseFloat(deviceData.Longitude);
+
             const isNewPosition = !prevDevicePositions.current[deviceId] ||
-                                  prevDevicePositions.current[deviceId].toString() !== [deviceData.Latitude, deviceData.Longitude].toString();
+                prevDevicePositions.current[deviceId][0] !== latitude ||
+                prevDevicePositions.current[deviceId][1] !== longitude;
+            
             if (isNewPosition) {
-              // Agregar la nueva posición solo si es diferente a la anterior
               if (!newDevicePositions[deviceId]) {
                 newDevicePositions[deviceId] = [];
               }
-              newDevicePositions[deviceId].push([deviceData.Latitude, deviceData.Longitude]);
-              // Actualizar el estado previo de las posiciones
-              prevDevicePositions.current[deviceId] = [deviceData.Latitude, deviceData.Longitude];
+              newDevicePositions[deviceId].push([latitude, longitude]);
+              prevDevicePositions.current[deviceId] = [latitude, longitude];
             }
           }
         }
       });
-
-      setDevicePositions(newDevicePositions); // Actualizar el estado con las nuevas posiciones
+      setDevicePositions(newDevicePositions);
     }
   }, [data, selectedDevice]);
 
-  // Renderizar las polilíneas para cada dispositivo seleccionado
-  const renderPolylines = () => {
-    const polylines = [];
-    for (const deviceId in devicePositions) {
-      const positions = devicePositions[deviceId];
 
-      const polyline = positions;
-      polylines.push(
-        <Polyline key={deviceId} positions={polyline} />
-      );
-    }
-    return polylines;
-  };
+return (
+  <div>
+      <Box
+          display='flex'
+          justifyContent='center'
+          marginY={6}
+          marginX={6}
+          gap={2}
+      >
+          <MapContainer style={{ height: "500px", width: '50%' }} center={[10.96854, -74.78132]} zoom={13} scrollWheelZoom={true}>
+              <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              />
+              {/* Renderizar las polilíneas para cada dispositivo */}
+              {Object.entries(devicePositions).filter(([deviceId]) => selectedDevice.includes(deviceId)).map((deviceId) => (
+                  <Polyline
+                      key={deviceId}
+                      positions={deviceId[1]}
+                      color={getColorForDevice(deviceId[0])} // Usa el color asignado para el dispositivo
+                  />
+              ))}
+          </MapContainer>
+          <Selector onSelectorChange={onSelectorChange} />
+      </Box>
+  </div>
+);
 
-  return (
-    <Grid container spacing={3} justifyContent="center">
-      {/* Map container */}
-      <Grid item xs={12} lg={6}>
-        <MapContainer style={{ height: "500px", width: '100%' }} center={[10.96854, -74.78132]} zoom={13} scrollWheelZoom={true}>
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          />
-          {renderPolylines()}
-        </MapContainer>
-      </Grid>
-
-      {/* Selector component */}
-      <Grid item xs={12} lg={4}>
-        <Selector onSelectorChange={onSelectorChange} />
-      </Grid>
-    </Grid>
-  );
 }
