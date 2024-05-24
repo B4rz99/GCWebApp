@@ -20,7 +20,7 @@ export default function BasicSelect({ onSelectorChange }) {
         // Function to fetch devices data
         async function fetchDevices() {
             try {
-                const response = await axios.get(`${API_URL}/api/unavailableDevices1`);
+                const response = await axios.get(`${API_URL}/api/unavailableDevices`);
                 if (response.status === 200) {
                     // Store devices data in state
                     const devicesData = response.data;
