@@ -8,7 +8,9 @@ import PresVariable from '../assets/presVariable';
 import CardVariable from '../assets/CardVariable';
 import TempVariable from '../assets/tempVariable';
 import SatVariable from '../assets/satVariable';
+import DeviceNameCard from '../assets/deviceNameCard.js';
 import Popup from '../assets/popup.js';
+
 
 // Dashboard view rendering
 function Dashboard() {
@@ -26,22 +28,24 @@ function Dashboard() {
           <Grid
             key={index}
             container
-            spacing={2}
+            spacing={0}
             justifyContent="center"
             alignItems="center"
-            spacing={2}
             style={{ marginBottom: '16px', marginTop:'2px' }} // Add space below each grid container
           >
-            <Grid item xs={12} sm={6} md={3} lg={3}>
+            <Grid item xs={10} sm={4} md={2} lg={2}>
+              <DeviceNameCard selectedDevice={device} /> {/* Add the DeviceNameCard */}
+            </Grid>
+            <Grid item xs={10} sm={4} md={2} lg={2}>
               <CardVariable selectedDevice={device} />
             </Grid>
-            <Grid item xs={12} sm={6} md={3} lg={3}>
+            <Grid item xs={10} sm={4} md={2} lg={2}>
               <TempVariable selectedDevice={device} />
             </Grid>
-            <Grid item xs={12} sm={6} md={3} lg={3}>
+            <Grid item xs={10} sm={4} md={2} lg={2}>
               <SatVariable selectedDevice={device} />
             </Grid>
-            <Grid item xs={12} sm={6} md={3} lg={3}>
+            <Grid item xs={10} sm={4} md={2} lg={2}>
               <PresVariable selectedDevice={device} />
             </Grid>
           </Grid>

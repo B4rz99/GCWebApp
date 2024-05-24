@@ -241,62 +241,89 @@ router.get('/realTime', async (req, res) => {
         attributes: ['DeviceId', 'TimeStamp', 'Latitude', 'Longitude'],
         where: sequelize.literal('("DeviceId", "TimeStamp") IN (SELECT "DeviceId", MAX("TimeStamp") FROM "Position" GROUP BY "DeviceId")') 
       });
-      // Combine los resultados en un solo objeto usando DeviceId como clave
-      const combinedData = {};
-      heartRates.forEach(heartRate => {
-        const deviceId = heartRate.DeviceId;
-        combinedData[deviceId] = {
-          DeviceId: deviceId,
-          HeartRate: heartRate.HeartRate,
-          TimeStampHeartRate: heartRate.TimeStamp
-        };
-      });
       
-      oxygens.forEach(oxygen => {
-        const deviceId = oxygen.DeviceId;
-        if (!combinedData[deviceId]) {
-          combinedData[deviceId] = { DeviceId: deviceId };
+      // Obtener los DeviceIds únicos de los datos obtenidos
+      const deviceIds = [...new Set([
+        ...heartRates.map(hr => hr.DeviceId),
+        ...oxygens.map(o => o.DeviceId),
+        ...temperatures.map(t => t.DeviceId),
+        ...pressures.map(p => p.DeviceId),
+        ...positions.map(pos => pos.DeviceId)
+    ])];
+
+    // Consultar la tabla Device para obtener los nombres de los dispositivos correspondientes
+    const devices = await Device.findAll({
+        attributes: ['DeviceId', 'Name'],
+        where: {
+            DeviceId: deviceIds
         }
-        combinedData[deviceId].Oxygen = oxygen.Oxygen;
+    });
+
+      // Crear un diccionario para un acceso rápido a los nombres de los dispositivos
+      const deviceNames = devices.reduce((acc, device) => {
+        acc[device.DeviceId] = device.Name;
+        return acc;
+    }, {});
+
+    // Combine los resultados en un solo objeto usando DeviceId como clave
+        const combinedData = {};
+        heartRates.forEach(heartRate => {
+            const deviceId = heartRate.DeviceId;
+            combinedData[deviceId] = {
+                DeviceId: deviceId,
+                DeviceName: deviceNames[deviceId] || 'Unknown', // Asigna 'Unknown' si no se encuentra el nombre
+                HeartRate: heartRate.HeartRate,
+                TimeStampHeartRate: heartRate.TimeStamp
+            };
         });
       
-      temperatures.forEach(temperature => {
-        const deviceId = temperature.DeviceId;
-        if (!combinedData[deviceId]) {
-          combinedData[deviceId] = { DeviceId: deviceId };
-        }
-        combinedData[deviceId].Temperature = temperature.Temperature;
+        oxygens.forEach(oxygen => {
+            const deviceId = oxygen.DeviceId;
+            if (!combinedData[deviceId]) {
+                combinedData[deviceId] = { DeviceId: deviceId, DeviceName: deviceNames[deviceId] || 'Unknown' };
+            }
+            combinedData[deviceId].Oxygen = oxygen.Oxygen;
+            combinedData[deviceId].TimeStampOxygen = oxygen.TimeStamp;
         });
-      
-      pressures.forEach(pressure => {
-        const deviceId = pressure.DeviceId;
-        if (!combinedData[deviceId]){
-            combinedData[deviceId] = { DeviceId: deviceId };
-        }
-        combinedData[deviceId].Sistolic = pressure.Sistolic;
-        combinedData[deviceId].Diastolic = pressure.Diastolic;
-      })
-    
-      positions.forEach(position => {
-        const deviceId = position.DeviceId;
-        if (!combinedData[deviceId]){
-            combinedData[deviceId] = { DeviceId: deviceId};
-        }
-        combinedData[deviceId].Latitude = position.Latitude;
-        combinedData[deviceId].Longitude = position.Longitude;
-      })
-      // Convertir el objeto combinado en un array de objetos
-      const data = Object.values(combinedData);
-      
-      
-  
-      res.json(data);
-      
+
+        temperatures.forEach(temperature => {
+            const deviceId = temperature.DeviceId;
+            if (!combinedData[deviceId]) {
+                combinedData[deviceId] = { DeviceId: deviceId, DeviceName: deviceNames[deviceId] || 'Unknown' };
+            }
+            combinedData[deviceId].Temperature = temperature.Temperature;
+            combinedData[deviceId].TimeStampTemperature = temperature.TimeStamp;
+        });
+
+        pressures.forEach(pressure => {
+            const deviceId = pressure.DeviceId;
+            if (!combinedData[deviceId]) {
+                combinedData[deviceId] = { DeviceId: deviceId, DeviceName: deviceNames[deviceId] || 'Unknown' };
+            }
+            combinedData[deviceId].Sistolic = pressure.Sistolic;
+            combinedData[deviceId].Diastolic = pressure.Diastolic;
+            combinedData[deviceId].TimeStampPressure = pressure.TimeStamp;
+        });
+
+        positions.forEach(position => {
+            const deviceId = position.DeviceId;
+            if (!combinedData[deviceId]) {
+                combinedData[deviceId] = { DeviceId: deviceId, DeviceName: deviceNames[deviceId] || 'Unknown' };
+            }
+            combinedData[deviceId].Latitude = position.Latitude;
+            combinedData[deviceId].Longitude = position.Longitude;
+            combinedData[deviceId].TimeStampPosition = position.TimeStamp;
+        });
+
+        // Convertir el objeto combinado en un array de objetos
+        const data = Object.values(combinedData);
+
+        res.json(data);
     } catch (error) {
-      console.error('Error fetching real-time data:', error);
-      res.status(500).json({ error: 'Internal server error' });
+        console.error('Error fetching real-time data:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
-  });
+});
 
   router.get('/availableDevices', async (req, res) => {
     try {
@@ -542,18 +569,43 @@ router.get('/sos', async (req, res) => {
         // Encontrar el último registro de cada DeviceId donde Enabled es false
         const latestAlarms = await Alarm.findAll({
             attributes: ['DeviceId', 'TimeStamp'],
-            where: sequelize.literal('("DeviceId", "TimeStamp") IN (SELECT "DeviceId", MAX("TimeStamp") FROM "Alarm" WHERE "Enabled"=false GROUP BY "DeviceId")') 
+            where: sequelize.literal('("DeviceId", "TimeStamp") IN (SELECT "DeviceId", MAX("TimeStamp") FROM "Alarm" WHERE "Enabled"=false GROUP BY "DeviceId")')
         });
+
+        // Obtener los DeviceIds únicos de latestAlarms
+        const deviceIds = latestAlarms.map(alarm => alarm.DeviceId);
+
+        // Consultar la tabla Device para obtener los nombres de los dispositivos correspondientes
+        const devices = await Device.findAll({
+            attributes: ['DeviceId', 'Name'],
+            where: {
+                DeviceId: deviceIds
+            }
+        });
+
+        // Crear un diccionario para un acceso rápido a los nombres de los dispositivos
+        const deviceNames = devices.reduce((acc, device) => {
+            acc[device.DeviceId] = device.Name;
+            return acc;
+        }, {});
+
+        // Agregar el nombre del dispositivo a cada alarma en latestAlarms
+        const latestAlarmsWithDeviceNames = latestAlarms.map(alarm => ({
+            DeviceId: alarm.DeviceId,
+            TimeStamp: alarm.TimeStamp,
+            DeviceName: deviceNames[alarm.DeviceId] || 'Unknown' // Default to 'Unknown' if no name found
+        }));
 
         // Actualizar todos los registros a Enabled true
         await Alarm.update({ Enabled: true }, { where: { Enabled: false } });
 
-        // Devolver los últimos registros encontrados
-        res.json(latestAlarms);
+        // Devolver los últimos registros encontrados con los nombres de los dispositivos
+        res.json(latestAlarmsWithDeviceNames);
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 module.exports = router;

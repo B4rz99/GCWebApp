@@ -35,7 +35,7 @@ const Popup = () => {
         <DialogContentText>
           { alertData.map((data, index) => (
             <p key={index}>
-              Alerta activada del dispositivo {data.DeviceId} a las {new Date(data.TimeStamp).toLocaleString()}
+              Alerta activada del dispositivo de {data.DeviceName} a las {new Date(data.TimeStamp).toLocaleString()}
             </p>
           ))}
         </DialogContentText>
